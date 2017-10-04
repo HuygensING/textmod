@@ -23,6 +23,8 @@ itself::
   mvn clean package &&
     ./target/appassembler/bin/topmod server config.yml
 
+or use the Dockerfile, ``docker run -p 8080:8080 $(docker build -q .)``.
+
 One demo endpoint exists::
 
   curl -H "Content-Type: application/json" \
