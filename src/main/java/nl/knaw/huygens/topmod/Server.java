@@ -16,9 +16,6 @@ import java.util.Properties;
 public class Server extends Application<Server.Config> {
   private static final Logger LOG = LoggerFactory.getLogger(Server.class);
 
-  static class Config extends Configuration {
-  }
-
   public static void main(String[] args) throws Exception {
     new Server().run(args);
   }
@@ -35,8 +32,7 @@ public class Server extends Application<Server.Config> {
     final InputStream propertyStream = getClass().getClassLoader().getResourceAsStream("build.properties");
     if (propertyStream == null) {
       LOG.warn("Resource \"build.properties\" not found");
-    }
-    else {
+    } else {
       final Properties properties = new Properties();
       try {
         properties.load(propertyStream);
@@ -52,5 +48,8 @@ public class Server extends Application<Server.Config> {
     }
 
     return Optional.empty();
+  }
+
+  static class Config extends Configuration {
   }
 }
