@@ -1,17 +1,20 @@
 package nl.knaw.huygens.topmod;
 
-import io.dropwizard.Application;
-import io.dropwizard.Configuration;
-import io.dropwizard.setup.Environment;
-import nl.knaw.huygens.topmod.resources.AboutResource;
-import nl.knaw.huygens.topmod.resources.KeywordSuggestResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.dropwizard.Application;
+import io.dropwizard.Configuration;
+import io.dropwizard.jersey.setup.JerseyEnvironment;
+import io.dropwizard.setup.Environment;
+import nl.knaw.huygens.topmod.core.TopicModel;
+import nl.knaw.huygens.topmod.resources.AboutResource;
+import nl.knaw.huygens.topmod.resources.KeywordSuggestResource;
 
 public class Server extends Application<Server.Config> {
   private static final Logger LOG = LoggerFactory.getLogger(Server.class);
@@ -23,9 +26,13 @@ public class Server extends Application<Server.Config> {
   @Override
   public void run(Config config, Environment environment) throws Exception {
     LOG.debug("running with config: {}", config);
-    final Properties buildProperties = extractBuildProperties().orElse(new Properties());
-    environment.jersey().register(new AboutResource(buildProperties));
-    environment.jersey().register(new KeywordSuggestResource());
+
+    Properties buildProperties = extractBuildProperties().orElse(new Properties());
+    TopicModel model = new TopicModel();
+
+    JerseyEnvironment jersey = environment.jersey();
+    jersey.register(new AboutResource(buildProperties));
+    jersey.register(new KeywordSuggestResource(model));
   }
 
   private Optional<Properties> extractBuildProperties() {
