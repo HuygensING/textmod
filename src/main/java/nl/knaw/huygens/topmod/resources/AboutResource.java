@@ -1,4 +1,4 @@
-package nl.knaw.huygens.pergamon.janus;
+package nl.knaw.huygens.topmod.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,7 +18,7 @@ public class AboutResource {
   @JsonProperty
   public final Properties buildProperties;
 
-  AboutResource(Properties buildProperties) {
+  public AboutResource(Properties buildProperties) {
     this.startedAt = Instant.now().toString();
     this.buildProperties = buildProperties;
   }
