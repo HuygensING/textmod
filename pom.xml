@@ -7,6 +7,7 @@
   <groupId>nl.knaw.huygens</groupId>
   <artifactId>topmod</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <name>Topic Modelling Tool</name>
 
   <properties>
     <!-- Encoding: everything UTF-8, please -->
@@ -20,6 +21,9 @@
 
     <dropwizard.version>1.1.4</dropwizard.version>
     <junit.version>4.12</junit.version>
+    <logback.version>4.11</logback.version>
+    <lucene.version>5.0.0</lucene.version>
+    <semanticvectors.version>5.8</semanticvectors.version>
   </properties>
 
   <build>
@@ -65,11 +69,20 @@
       <artifactId>dropwizard-core</artifactId>
       <version>${dropwizard.version}</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>${lucene.version}</version>
+    </dependency>
     <dependency>
       <groupId>net.logstash.logback</groupId>
       <artifactId>logstash-logback-encoder</artifactId>
-      <version>4.11</version>
+      <version>${logback.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pitt.search</groupId>
+      <artifactId>semanticvectors</artifactId>
+      <version>${semanticvectors.version}</version>
     </dependency>
 
     <!-- Test dependencies -->
