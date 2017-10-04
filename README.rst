@@ -25,6 +25,15 @@ itself::
 
 or use the Dockerfile, ``docker run -p 8080:8080 $(docker build -q .)``.
 
+Alternatively, you can pull the latest build from Dockerhub::
+
+  docker pull huygensing/topmod
+
+and run that version, ``docker run -p 8080:8080 huygensing/topmod``.
+This version also exposes various docker hub build properties at `/about`::
+
+  curl -s localhost:8080/about | jq .
+
 One demo endpoint exists::
 
   curl -H "Content-Type: application/json" \
