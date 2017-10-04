@@ -20,7 +20,7 @@ public class KeywordSuggestResource {
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
-  public Suggestion getKeywordSuggestions(List<String> query) {
+  public Suggestion getKeywordSuggestions(String query) {
     LOG.debug("Getting keyword suggestions for: {}", query);
     return new Suggestion("lorem", "ipsum");
   }

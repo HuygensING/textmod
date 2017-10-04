@@ -37,4 +37,4 @@ This version also exposes various docker hub build properties at `/about`::
 One demo endpoint exists::
 
   curl -H "Content-Type: application/json" \
-    http://localhost:8080/suggest -d '["keys", "to", "look", "for"]'
+    http://localhost:8080/suggest -d 'keys to look for'
