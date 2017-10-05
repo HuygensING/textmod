@@ -37,7 +37,7 @@ public class Server extends Application<Config> {
 
     Properties buildProperties = extractBuildProperties().orElse(new Properties());
     File dataDirectory = validateDataDirectory(config.getDataDirectoryName());
-    TopicModel model = new TopicModel();
+    TopicModel model = new TopicModel(new File(dataDirectory, "model"));
 
     JerseyEnvironment jersey = environment.jersey();
     jersey.register(new AboutResource(buildProperties));
