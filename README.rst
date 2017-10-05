@@ -17,24 +17,30 @@ A REST interface to Topic Modeling.
 Usage
 -----
 
-Edit ``config.yml`` as needed. Then compile and run TopMod
-itself::
+Edit ``config.yml`` as needed. Then compile and run TopMod itself::
 
   mvn clean package &&
     ./target/appassembler/bin/topmod server config.yml
 
-or use the Dockerfile, ``docker run -p 8080:8080 $(docker build -q .)``.
+or use the Dockerfile, ``docker run -p 8080:8080 -v model-vol:/models $(docker build -q .)``.
+The docker volume ``model-vol`` will be created if it does not exist.
+The mounted directory, ``/models``, must match the ``dataDirectory`` setting
+in the configuration file ``config.yml``.
 
 Alternatively, you can pull the latest build from Dockerhub::
 
   docker pull huygensing/topmod
 
-and run that version, ``docker run -p 8080:8080 huygensing/topmod``.
-This version also exposes various docker hub build properties at `/about`::
+and run that version, ``docker run -p 8080:8080 -v model-vol:/models huygensing/topmod``.
+This version also exposes various Dockerhub build properties at ``/about``::
 
   curl -s localhost:8080/about | jq .
 
-One demo endpoint exists::
+Model files can be uploaded in zipped form::
+
+  curl -F "file=@model.zip;filename=model.zip" http://localhost:8080/models
+
+Once a topic model is uploaded, word suggestions can be optained as follows::
 
   curl -H "Content-Type: application/json" \
-    http://localhost:8080/suggest -d 'keys to look for'
+    http://localhost:8080/suggest -d 'Jupiter Saturnus'

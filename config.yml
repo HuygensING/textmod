@@ -6,3 +6,5 @@ logging:
         mdc: "mdc" # push Mapped Diagnostic Context into JSON sub field called "mdc"
   loggers:
     nl.knaw.huygens.topmod: DEBUG
+
+dataDirectory: /models

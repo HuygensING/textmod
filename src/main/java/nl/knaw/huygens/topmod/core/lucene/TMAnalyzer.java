@@ -9,13 +9,12 @@ import org.apache.lucene.analysis.util.CharTokenizer;
 /**
  * Lucene analyzer, implementing:<ul>
  * <li>tokenization</li>
- * <li>convertion to lower case</li>
+ * <li>conversion to lower case</li>
  * </ul>
  */
 public final class TMAnalyzer extends Analyzer {
 
-  public TMAnalyzer() {
-  }
+  public TMAnalyzer() {}
 
   @Override
   protected TokenStreamComponents createComponents(String fieldName) {
