@@ -25,7 +25,7 @@ Edit ``config.yml`` as needed. Then compile and run TopMod itself::
 or use the Dockerfile, ``docker run -p 8080:8080 -v model-vol:/models $(docker build -q .)``.
 The docker volume ``model-vol`` will be created if it does not exist.
 The mounted directory, ``/models``, must match the ``dataDirectory`` setting
-in the configuration file ``config.yml``.
+in the configuration file.
 
 Alternatively, you can pull the latest build from Dockerhub::
 
@@ -34,9 +34,9 @@ Alternatively, you can pull the latest build from Dockerhub::
 and run that version, ``docker run -p 8080:8080 -v model-vol:/models huygensing/topmod``.
 This version also exposes various Dockerhub build properties at ``/about``::
 
-  curl -s localhost:8080/about | jq .
+  curl -s localhost:8080/about | jq
 
-Model files can be uploaded in zipped form::
+Topic model files can be uploaded in zipped form::
 
   curl -F "file=@model.zip;filename=model.zip" http://localhost:8080/models
 
