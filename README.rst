@@ -34,7 +34,7 @@ Alternatively, you can pull the latest build from Dockerhub::
 and run that version, ``docker run -p 8080:8080 -v model-vol:/models huygensing/topmod``.
 This version also exposes various Dockerhub build properties at ``/about``::
 
-  curl -s localhost:8080/about | jq
+  curl -s localhost:8080/about | jq .
 
 Topic model files can be uploaded in zipped form::
 
