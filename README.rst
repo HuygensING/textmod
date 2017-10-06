@@ -42,5 +42,4 @@ Topic model files can be uploaded in zipped form::
 
 Once a topic model is uploaded, word suggestions can be optained as follows::
 
-  curl -H "Content-Type: application/json" \
-    http://localhost:8080/suggest -d 'Jupiter Saturnus'
+  curl -s http://localhost:8080/suggest -d 'Jupiter Saturnus'
