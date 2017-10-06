@@ -1,14 +1,5 @@
 package nl.knaw.huygens.topmod;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Optional;
-import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.dropwizard.Application;
 import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
@@ -18,8 +9,18 @@ import nl.knaw.huygens.topmod.core.TopicModel;
 import nl.knaw.huygens.topmod.resources.AboutResource;
 import nl.knaw.huygens.topmod.resources.KeywordSuggestResource;
 import nl.knaw.huygens.topmod.resources.ModelsResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Optional;
+import java.util.Properties;
 
 public class Server extends Application<Config> {
+  private static final String SERVICE_NAME = "TopMod";
+
   private static final Logger LOG = LoggerFactory.getLogger(Server.class);
 
   public static void main(String[] args) throws Exception {
@@ -40,7 +41,7 @@ public class Server extends Application<Config> {
     TopicModel model = new TopicModel(new File(dataDirectory, "model"));
 
     JerseyEnvironment jersey = environment.jersey();
-    jersey.register(new AboutResource(buildProperties));
+    jersey.register(new AboutResource(SERVICE_NAME, buildProperties));
     jersey.register(new KeywordSuggestResource(model));
     jersey.register(new ModelsResource(dataDirectory));
   }
