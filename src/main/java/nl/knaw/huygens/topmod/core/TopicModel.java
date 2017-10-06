@@ -1,13 +1,5 @@
 package nl.knaw.huygens.topmod.core;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.Lists;
-
 import nl.knaw.huygens.topmod.core.lucene.TMAnalyzer;
 import nl.knaw.huygens.topmod.core.text.ListTokenTextHandler;
 import nl.knaw.huygens.topmod.core.text.TextAnalyzer;
@@ -16,6 +8,13 @@ import pitt.search.semanticvectors.FlagConfig;
 import pitt.search.semanticvectors.SearchResult;
 import pitt.search.semanticvectors.VectorSearcher;
 import pitt.search.semanticvectors.VectorStoreReader;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TopicModel {
 
@@ -56,7 +55,7 @@ public class TopicModel {
   }
 
   private List<WeightedTerm> suggest(List<String> queryTerms, int numTerms) {
-    List<WeightedTerm> terms = Lists.newArrayList();
+    List<WeightedTerm> terms = new ArrayList<>();
     if (!queryTerms.isEmpty() && numTerms > 0 && getTermVectors().exists()) {
       FlagConfig flagConfig = FlagConfig.getFlagConfig(null);
       CloseableVectorStore store = null;
