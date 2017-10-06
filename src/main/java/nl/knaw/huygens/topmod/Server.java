@@ -19,12 +19,15 @@ import java.util.Optional;
 import java.util.Properties;
 
 public class Server extends Application<Config> {
-  private static final String SERVICE_NAME = "TopMod";
-
   private static final Logger LOG = LoggerFactory.getLogger(Server.class);
 
   public static void main(String[] args) throws Exception {
     new Server().run(args);
+  }
+
+  @Override
+  public String getName() {
+    return "topmod";
   }
 
   @Override
@@ -41,7 +44,7 @@ public class Server extends Application<Config> {
     TopicModel model = new TopicModel(new File(dataDirectory, "model"));
 
     JerseyEnvironment jersey = environment.jersey();
-    jersey.register(new AboutResource(SERVICE_NAME, buildProperties));
+    jersey.register(new AboutResource(getName(), buildProperties));
     jersey.register(new KeywordSuggestResource(model));
     jersey.register(new ModelsResource(dataDirectory));
   }
