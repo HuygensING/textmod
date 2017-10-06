@@ -38,14 +38,14 @@ public class TopicModel {
   }
 
   public List<String> suggest(String query, int numTerms) {
-    List<String> queryTerms = parseQyery(query);
+    List<String> queryTerms = parseQuery(query);
     return suggest(queryTerms, numTerms) //
         .stream() //
         .map(t -> String.format("%s (%s)", t.getText(), t.getSimilarity())) //
         .collect(Collectors.toList());
   }
 
-  private List<String> parseQyery(String query) {
+  private List<String> parseQuery(String query) {
     try {
       ListTokenTextHandler handler = new ListTokenTextHandler();
       TextAnalyzer.newInstance(new TMAnalyzer(), handler).analyze(query);
