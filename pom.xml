@@ -7,7 +7,7 @@
   <groupId>nl.knaw.huygens</groupId>
   <artifactId>topmod</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>Topic Modelling Tool</name>
+  <name>Topic Modeling Tool</name>
 
   <properties>
     <!-- Encoding: everything UTF-8, please -->
