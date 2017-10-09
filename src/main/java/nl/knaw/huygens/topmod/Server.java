@@ -7,8 +7,8 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import nl.knaw.huygens.topmod.core.TopicModel;
 import nl.knaw.huygens.topmod.resources.AboutResource;
-import nl.knaw.huygens.topmod.resources.KeywordSuggestResource;
 import nl.knaw.huygens.topmod.resources.ModelsResource;
+import nl.knaw.huygens.topmod.resources.SearchTermResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,8 +45,8 @@ public class Server extends Application<Config> {
 
     JerseyEnvironment jersey = environment.jersey();
     jersey.register(new AboutResource(getName(), buildProperties));
-    jersey.register(new KeywordSuggestResource(model));
     jersey.register(new ModelsResource(dataDirectory));
+    jersey.register(new SearchTermResource(model));
   }
 
   private Optional<Properties> extractBuildProperties() {

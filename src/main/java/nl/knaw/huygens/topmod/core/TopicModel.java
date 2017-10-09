@@ -32,11 +32,8 @@ public class TopicModel {
     return new File(modelDirectory, "termvectors.bin");
   }
 
-  public List<String> suggest(String query) {
-    return suggest(query, 10);
-  }
-
-  public List<String> suggest(String query, int numTerms) {
+  public List<String> suggest(String query, String model, int numTerms) {
+    // model is currently ignored
     List<String> queryTerms = parseQuery(query);
     return suggest(queryTerms, numTerms) //
         .stream() //
