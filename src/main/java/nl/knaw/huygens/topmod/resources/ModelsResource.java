@@ -1,5 +1,18 @@
 package nl.knaw.huygens.topmod.resources;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.io.FileUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,21 +20,12 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
-import org.apache.commons.io.FileUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-@Path("/models")
+@Api(ModelsResource.PATH)
+@Path(ModelsResource.PATH)
 @Produces(MediaType.APPLICATION_JSON)
 public class ModelsResource {
+  static final String PATH = "models";
+
   private static final Logger LOG = LoggerFactory.getLogger(ModelsResource.class);
 
   private final File dataDirectory;
@@ -32,6 +36,7 @@ public class ModelsResource {
 
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @ApiOperation(value = "Uploads a zip-file containing topic model data")
   public void importModel( //
       @FormDataParam("file") InputStream stream, //
       @FormDataParam("file") FormDataContentDisposition header //

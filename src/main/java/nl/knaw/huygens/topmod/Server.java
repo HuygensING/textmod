@@ -5,6 +5,12 @@ import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.jersey.setup.JerseyEnvironment;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.federecio.dropwizard.swagger.SwaggerBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import io.swagger.annotations.Contact;
+import io.swagger.annotations.Info;
+import io.swagger.annotations.License;
+import io.swagger.annotations.SwaggerDefinition;
 import nl.knaw.huygens.topmod.core.TopicModel;
 import nl.knaw.huygens.topmod.resources.AboutResource;
 import nl.knaw.huygens.topmod.resources.ModelsResource;
@@ -12,12 +18,32 @@ import nl.knaw.huygens.topmod.resources.SearchTermResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
 
+@SwaggerDefinition( //
+    info = @Info( //
+        description = "Topic modelling service for Pergamon", //
+        version = "1.0", //
+        title = "TopMod: topic modeling service", //
+        termsOfService = "http://example.com/to-be-determined.html", //
+        contact = @Contact( //
+            name = "Developers", //
+            email = "topmod@example.com", //
+            url = "http://pergamon.huygens.knaw.nl" //
+        ), //
+        license = @License( //
+            name = "GNU GENERAL PUBLIC LICENSE", //
+            url = "https://www.gnu.org/licenses/licenses.en.html#GPL" //
+        ) //
+    ), //
+    consumes = { MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON }, //
+    schemes = { SwaggerDefinition.Scheme.HTTP, SwaggerDefinition.Scheme.HTTPS } //
+)
 public class Server extends Application<Config> {
   private static final Logger LOG = LoggerFactory.getLogger(Server.class);
 
@@ -33,6 +59,12 @@ public class Server extends Application<Config> {
   @Override
   public void initialize(Bootstrap<Config> bootstrap) {
     bootstrap.addBundle(new MultiPartBundle());
+    bootstrap.addBundle(new SwaggerBundle<Config>() {
+      @Override
+      protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(Config config) {
+        return config.getSwaggerBundleConfig();
+      }
+    });
   }
 
   @Override

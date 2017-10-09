@@ -7,4 +7,7 @@ logging:
   loggers:
     nl.knaw.huygens.topmod: DEBUG
 
+swagger:
+  resourcePackage: nl.knaw.huygens.topmod,nl.knaw.huygens.topmod.resources
+
 dataDirectory: /models
