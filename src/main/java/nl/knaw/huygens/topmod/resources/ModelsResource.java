@@ -37,10 +37,8 @@ public class ModelsResource {
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @ApiOperation(value = "Uploads a zip-file containing topic model data")
-  public void importModel( //
-      @FormDataParam("file") InputStream stream, //
-      @FormDataParam("file") FormDataContentDisposition header //
-  ) throws Exception {
+  public void importModel(@FormDataParam("file") InputStream stream,
+                          @FormDataParam("file") FormDataContentDisposition header) throws Exception {
     LOG.debug("Importing: {}", header.getFileName());
     unzipStream(stream, dataDirectory);
   }
@@ -74,7 +72,7 @@ public class ModelsResource {
         }
 
         if (entry.isDirectory()) {
-          if (!path.toFile().mkdirs()) {
+          if (!path.toFile().exists() && !path.toFile().mkdirs()) {
             throw new IOException("Could not create directory " + path);
           }
         } else {
