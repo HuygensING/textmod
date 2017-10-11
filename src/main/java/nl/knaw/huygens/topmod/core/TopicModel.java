@@ -1,6 +1,6 @@
 package nl.knaw.huygens.topmod.core;
 
-import nl.knaw.huygens.topmod.core.lucene.TMAnalyzer;
+import nl.knaw.huygens.topmod.core.lucene.LuceneAnalyzer;
 import nl.knaw.huygens.topmod.core.text.ListTokenTextHandler;
 import nl.knaw.huygens.topmod.core.text.TextAnalyzer;
 import pitt.search.semanticvectors.CloseableVectorStore;
@@ -44,7 +44,7 @@ public class TopicModel {
   private List<String> parseQuery(String query) {
     try {
       ListTokenTextHandler handler = new ListTokenTextHandler();
-      TextAnalyzer.newInstance(new TMAnalyzer(), handler).analyze(query);
+      TextAnalyzer.newInstance(new LuceneAnalyzer(), handler).analyze(query);
       return handler.getTokens();
     } catch (IOException e) {
       return Arrays.asList(query.toLowerCase().split("\\s+"));
