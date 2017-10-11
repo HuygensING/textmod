@@ -4,6 +4,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.util.CharTokenizer;
 
 import java.util.EnumSet;
@@ -41,6 +42,9 @@ public final class LuceneAnalyzer extends Analyzer {
     TokenFilter filter = new LowerCaseFilter(tokenizer);
     if (options.contains(FilterOption.BASIC)) {
       filter = new BaseFilter(filter, MIN_LENGTH);
+    }
+    if (options.contains(FilterOption.DIACR)) {
+      filter = new ASCIIFoldingFilter(filter);
     }
 
     return new TokenStreamComponents(tokenizer, filter);

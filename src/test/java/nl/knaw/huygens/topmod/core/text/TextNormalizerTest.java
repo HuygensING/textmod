@@ -4,7 +4,6 @@ import nl.knaw.huygens.topmod.core.lucene.LuceneAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TextNormalizerTest {
@@ -41,13 +40,11 @@ public class TextNormalizerTest {
     testCase("huygens ing", "Huygens ING!");
   }
 
-  @Ignore
   @Test
   public void simpleNumbers() {
     testCase("", "1234 5432");
   }
 
-  @Ignore
   @Test
   public void mixedNumbersAndLetters() {
     testCase("tje", "aa4-tje");
