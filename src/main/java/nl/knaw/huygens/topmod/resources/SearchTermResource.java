@@ -15,7 +15,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 @Api(SearchTermResource.PATH)
 @Path(SearchTermResource.PATH)
@@ -36,8 +35,7 @@ public class SearchTermResource {
   @ApiOperation(value = "Calculates search term suggestions")
   public Suggestion getSearchTermSuggestions(SuggestParams params) {
     LOG.debug("Getting suggestions for '{}'", params);
-    List<String> terms = topicModel.suggest(params.query, params.model, params.maxTerms);
-    return new Suggestion(terms);
+    return new Suggestion(topicModel.suggest(params.query, params.model, params.maxTerms));
   }
 
   static class SuggestParams {
@@ -56,10 +54,10 @@ public class SearchTermResource {
     @Override
     public String toString() {
       return MoreObjects.toStringHelper(this) //
-          .add("query", query) //
-          .add("model", model) //
-          .add("maxTerms", maxTerms) //
-          .toString();
+                        .add("query", query) //
+                        .add("model", model) //
+                        .add("maxTerms", maxTerms) //
+                        .toString();
     }
   }
 

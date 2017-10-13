@@ -37,12 +37,10 @@ public class TopicModel {
     return new File(modelDirectory, "termvectors.bin");
   }
 
-  public List<String> suggest(String query, String model, int numTerms) {
+  public List<WeightedTerm> suggest(String query, String model, int numTerms) {
     // model is currently ignored
     List<String> queryTerms = parseQuery(query);
-    return suggest(queryTerms, numTerms).stream()
-                                        .map(t -> String.format("%s (%s)", t.getText(), t.getSimilarity()))
-                                        .collect(Collectors.toList());
+    return suggest(queryTerms, numTerms);
   }
 
   private List<String> parseQuery(String query) {
@@ -82,7 +80,7 @@ public class TopicModel {
   }
 
   private WeightedTerm toWeightedTerm(SearchResult result) {
-    return new WeightedTerm(result.getObjectVector().getObject().toString(), (float) result.getScore());
+    return new WeightedTerm(result.getObjectVector().getObject().toString(), result.getScore());
   }
 
   private Optional<VectorSearcherCosine> getSearcher(FlagConfig flagConfig, CloseableVectorStore store,
