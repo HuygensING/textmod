@@ -2,7 +2,6 @@ package nl.knaw.huygens.topmod.resources;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.io.FileUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -13,9 +12,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -34,6 +36,10 @@ public class ModelsResource {
     this.dataDirectory = dataDirectory;
   }
 
+  private static long copyFile(InputStream stream, java.nio.file.Path temp) throws IOException {
+    return Files.copy(stream, temp, StandardCopyOption.REPLACE_EXISTING);
+  }
+
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @ApiOperation(value = "Uploads a zip-file containing topic model data")
@@ -47,7 +53,7 @@ public class ModelsResource {
     File temp = null;
     try {
       temp = File.createTempFile("upload", "zip");
-      FileUtils.copyToFile(stream, temp);
+      copyFile(stream, temp.toPath());
       unzipFile(temp, targetDir);
     } finally {
       if (temp != null) {
@@ -77,7 +83,7 @@ public class ModelsResource {
           }
         } else {
           LOG.debug("Copying {}", path);
-          FileUtils.copyToFile(zip.getInputStream(entry), path.toFile());
+          copyFile(zip.getInputStream(entry), path);
         }
       }
     }
