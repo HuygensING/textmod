@@ -1,6 +1,8 @@
 package nl.knaw.huygens.topmod.core;
 
+import com.google.common.collect.ImmutableList;
 import nl.knaw.huygens.topmod.core.lucene.LuceneAnalyzer;
+import nl.knaw.huygens.topmod.core.text.Language;
 import nl.knaw.huygens.topmod.core.text.ListTokenTextHandler;
 import nl.knaw.huygens.topmod.core.text.TextAnalyzer;
 import org.slf4j.Logger;
@@ -23,6 +25,8 @@ import java.util.stream.Collectors;
 public class TopicModel {
   private static final Logger LOG = LoggerFactory.getLogger(TopicModel.class);
 
+  // -- directories and files --------------------------------------------------
+
   private final File modelDirectory;
 
   public TopicModel(File modelDirectory) {
@@ -36,6 +40,29 @@ public class TopicModel {
   public File getTermVectors() {
     return new File(modelDirectory, "termvectors.bin");
   }
+
+  public File getTermDir() {
+    return new File(modelDirectory, "terms");
+  }
+
+  public File getTermFile(Language language) {
+    return new File(getTermDir(), String.format("text-%s.txt", language.getCode()));
+  }
+
+  public File getTermIndexDir() {
+    return new File(modelDirectory, "index");
+  }
+
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Returns the languages that are currently dealt with in topic modelling.
+   */
+  public List<Language> getAnalyzedLanguages() {
+    return ImmutableList.of(Language.DUTCH, Language.FRENCH, Language.LATIN);
+  }
+
+  // ---------------------------------------------------------------------------
 
   public List<WeightedTerm> suggest(String query, String model, int numTerms) {
     // model is currently ignored
