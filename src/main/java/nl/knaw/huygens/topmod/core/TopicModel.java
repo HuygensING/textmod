@@ -3,20 +3,25 @@ package nl.knaw.huygens.topmod.core;
 import nl.knaw.huygens.topmod.core.lucene.LuceneAnalyzer;
 import nl.knaw.huygens.topmod.core.text.ListTokenTextHandler;
 import nl.knaw.huygens.topmod.core.text.TextAnalyzer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pitt.search.semanticvectors.CloseableVectorStore;
 import pitt.search.semanticvectors.FlagConfig;
 import pitt.search.semanticvectors.SearchResult;
-import pitt.search.semanticvectors.VectorSearcher;
+import pitt.search.semanticvectors.VectorSearcher.VectorSearcherCosine;
 import pitt.search.semanticvectors.VectorStoreReader;
+import pitt.search.semanticvectors.vectors.ZeroVectorException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TopicModel {
+  private static final Logger LOG = LoggerFactory.getLogger(TopicModel.class);
 
   private final File modelDirectory;
 
@@ -35,10 +40,9 @@ public class TopicModel {
   public List<String> suggest(String query, String model, int numTerms) {
     // model is currently ignored
     List<String> queryTerms = parseQuery(query);
-    return suggest(queryTerms, numTerms) //
-        .stream() //
-        .map(t -> String.format("%s (%s)", t.getText(), t.getSimilarity())) //
-        .collect(Collectors.toList());
+    return suggest(queryTerms, numTerms).stream()
+                                        .map(t -> String.format("%s (%s)", t.getText(), t.getSimilarity()))
+                                        .collect(Collectors.toList());
   }
 
   private List<String> parseQuery(String query) {
@@ -52,27 +56,53 @@ public class TopicModel {
   }
 
   private List<WeightedTerm> suggest(List<String> queryTerms, int numTerms) {
-    List<WeightedTerm> terms = new ArrayList<>();
+    Optional<List<WeightedTerm>> results = Optional.empty();
+
     if (!queryTerms.isEmpty() && numTerms > 0 && getTermVectors().exists()) {
-      FlagConfig flagConfig = FlagConfig.getFlagConfig(null);
-      CloseableVectorStore store = null;
-      try {
-        store = VectorStoreReader.openVectorStore(getTermVectors().getPath(), flagConfig);
-        String[] queryArray = queryTerms.toArray(new String[0]);
-        VectorSearcher searcher = new VectorSearcher.VectorSearcherCosine(store, store, null, flagConfig, queryArray);
-        List<SearchResult> results = searcher.getNearestNeighbors(numTerms);
-        for (int i = 0; i < numTerms; i++) {
-          SearchResult result = results.get(i);
-          String text = result.getObjectVector().getObject().toString();
-          terms.add(new WeightedTerm(text, (float) result.getScore()));
-        }
-      } catch (Exception e) {
-        if (store != null) {
-          store.close();
-        }
-      }
+      final FlagConfig flagConfig = FlagConfig.getFlagConfig(null);
+
+      // CloseableVectorStore does not implement AutoCloseable, so collectAndClose instead of try-with-resources :-(
+      results = openStore(flagConfig).flatMap(store -> collectAndClose(flagConfig, store, queryTerms, numTerms));
     }
-    return terms;
+
+    return results.orElse(Collections.emptyList());
+  }
+
+  private Optional<List<WeightedTerm>> collectAndClose(FlagConfig flagConfig, CloseableVectorStore store,
+                                                       List<String> queryTerms, int numTerms) {
+    Optional<List<WeightedTerm>> results = getSearcher(flagConfig, store, queryTerms)
+      .map(searcher -> searcher.getNearestNeighbors(numTerms))
+      .map(neighbours -> neighbours.stream()
+                                   .map(this::toWeightedTerm)
+                                   .collect(Collectors.toList()));
+
+    store.close();
+
+    return results;
+  }
+
+  private WeightedTerm toWeightedTerm(SearchResult result) {
+    return new WeightedTerm(result.getObjectVector().getObject().toString(), (float) result.getScore());
+  }
+
+  private Optional<VectorSearcherCosine> getSearcher(FlagConfig flagConfig, CloseableVectorStore store,
+                                                     List<String> queryTerms) {
+    try {
+      String[] queryArray = queryTerms.toArray(new String[0]);
+      return Optional.of(new VectorSearcherCosine(store, store, null, flagConfig, queryArray));
+    } catch (ZeroVectorException e) {
+      LOG.warn("Unable to instantiate VectorSearcherCosine: {}", e);
+      return Optional.empty();
+    }
+  }
+
+  private Optional<CloseableVectorStore> openStore(FlagConfig flagConfig) {
+    try {
+      return Optional.of(VectorStoreReader.openVectorStore(getTermVectors().getPath(), flagConfig));
+    } catch (IOException e) {
+      LOG.warn("Unable to open VectorStore: {}", e);
+      return Optional.empty();
+    }
   }
 
 }
