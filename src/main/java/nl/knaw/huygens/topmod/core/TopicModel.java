@@ -46,7 +46,7 @@ public class TopicModel {
   }
 
   public File getTermFile(Language language) {
-    return new File(getTermDir(), String.format("text-%s.txt", language.getCode()));
+    return new File(getTermDir(), String.format("terms-%s.txt", language.getCode()));
   }
 
   public File getTermIndexDir() {
