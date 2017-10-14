@@ -6,7 +6,7 @@ import org.junit.Test;
 public class TermTest {
 
   @Test
-  public void testQueryTerm() {
+  public void testConstruction() {
     Term term = new Term("text", "norm", "code", 42);
     Assert.assertEquals("text", term.getText());
     Assert.assertEquals("norm", term.getNorm());
