@@ -24,6 +24,7 @@
     <junit.version>4.12</junit.version>
     <logback.version>4.11</logback.version>
     <lucene.version>5.0.0</lucene.version>
+    <opencsv.version>4.0</opencsv.version>
     <semanticvectors.version>5.8</semanticvectors.version>
     <swagger.version>1.1.1-1</swagger.version>
   </properties>
@@ -102,6 +103,11 @@
       <artifactId>dropwizard-swagger</artifactId>
       <version>${swagger.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>${opencsv.version}</version>
+    </dependency>
 
     <!-- Test dependencies -->
     <dependency>
@@ -113,3 +119,4 @@
   </dependencies>
 
 </project>
+
