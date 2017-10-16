@@ -6,8 +6,6 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 
 /**
@@ -31,8 +29,7 @@ public abstract class CSVImporter {
   }
 
   public void handleFile(File file, int minItemsPerLine) throws Exception {
-    Reader reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
-    handleFile(reader, minItemsPerLine);
+    handleFile(FileUtils.readerForFile(file), minItemsPerLine);
   }
 
   public void handleFile(Reader reader, int minItemsPerLine) throws Exception {

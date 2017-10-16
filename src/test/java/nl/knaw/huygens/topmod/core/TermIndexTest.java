@@ -6,9 +6,10 @@ import org.apache.lucene.store.RAMDirectory;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TermIndexTest {
 
@@ -26,9 +27,7 @@ public class TermIndexTest {
     }
 
     @Override
-    protected void closeDirectory() {
-      directory = null;
-    }
+    protected void closeDirectory(Directory directory) {}
   }
 
   private TermIndex getTermIndex() {
@@ -37,19 +36,28 @@ public class TermIndexTest {
 
   @Test
   public void testConstruction() throws IOException {
+    String input = "locorum;locorum;233\n" //
+        + "locorumque;locorum;2\n" //
+        + "locos;locos;32\n" //
+        + "loculi;loculi;2\n" //
+        + "loculis;loculis;10\n" //
+        + "loculos;loculos;5\n" //
+        + "locum;locum;839\n" //
+        + "locumque;locum;3\n" //
+        + "locuples;locuples;7\n" //
+        + "locupletare;locupletare;8\n";
+    StringReader reader = new StringReader(input);
     TermIndex index = getTermIndex();
-    index.addTermFile(new File("terms-nl.txt"), Language.DUTCH);
-    index.addTermFile(new File("terms-fr.txt"), Language.FRENCH);
-    index.addTermFile(new File("terms-la.txt"), Language.LATIN);
+    index.addTermFile(reader, Language.LATIN);
 
     index.openForReading();
-    List<String> terms = index.denormalize("koning");
+    List<WeightedTerm> terms = index.denormalize("locum");
     index.closeAfterReading();
 
-    Assert.assertEquals(3, terms.size());
-    Assert.assertTrue(terms.contains("coninghfr"));
-    Assert.assertTrue(terms.contains("coninghla"));
-    Assert.assertTrue(terms.contains("coninghnl"));
+    Assert.assertEquals(2, terms.size());
+    List<String> texts = terms.stream().map(WeightedTerm::getText).collect(Collectors.toList());
+    Assert.assertTrue(texts.contains("locum"));
+    Assert.assertTrue(texts.contains("locumque"));
   }
 
 }
