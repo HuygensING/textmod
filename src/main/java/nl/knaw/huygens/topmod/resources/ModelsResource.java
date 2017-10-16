@@ -2,6 +2,7 @@ package nl.knaw.huygens.topmod.resources;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import nl.knaw.huygens.topmod.core.TopicModel;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -43,10 +44,10 @@ public class ModelsResource {
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @ApiOperation(value = "Uploads a zip-file containing topic model data")
-  public void importModel(@FormDataParam("file") InputStream stream,
-                          @FormDataParam("file") FormDataContentDisposition header) throws Exception {
+  public void importModel(@FormDataParam("file") InputStream stream, @FormDataParam("file") FormDataContentDisposition header) throws Exception {
     LOG.debug("Importing: {}", header.getFileName());
     unzipStream(stream, dataDirectory);
+    new TopicModel(new File(dataDirectory, "model")).setupTermIndex();
   }
 
   private void unzipStream(InputStream stream, File targetDir) throws IOException {

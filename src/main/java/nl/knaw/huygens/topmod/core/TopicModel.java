@@ -64,6 +64,16 @@ public class TopicModel {
 
   // ---------------------------------------------------------------------------
 
+  public void setupTermIndex() throws IOException {
+    TermIndex termIndex = new TermIndex(getTermIndexDir());
+    for (Language language : getAnalyzedLanguages()) {
+      File termFile = getTermFile(language);
+      if (termFile.canRead()) {
+        termIndex.addTermFile(termFile, language);
+      }
+    }
+  }
+
   public List<WeightedTerm> suggest(String query, String model, int numTerms) {
     // model is currently ignored
     List<String> queryTerms = parseQuery(query);
@@ -93,13 +103,9 @@ public class TopicModel {
     return results.orElse(Collections.emptyList());
   }
 
-  private Optional<List<WeightedTerm>> collectAndClose(FlagConfig flagConfig, CloseableVectorStore store,
-                                                       List<String> queryTerms, int numTerms) {
-    Optional<List<WeightedTerm>> results = getSearcher(flagConfig, store, queryTerms)
-      .map(searcher -> searcher.getNearestNeighbors(numTerms))
-      .map(neighbours -> neighbours.stream()
-                                   .map(this::toWeightedTerm)
-                                   .collect(Collectors.toList()));
+  private Optional<List<WeightedTerm>> collectAndClose(FlagConfig flagConfig, CloseableVectorStore store, List<String> queryTerms, int numTerms) {
+    Optional<List<WeightedTerm>> results = getSearcher(flagConfig, store, queryTerms).map(searcher -> searcher.getNearestNeighbors(numTerms)).map(
+        neighbours -> neighbours.stream().map(this::toWeightedTerm).collect(Collectors.toList()));
 
     store.close();
 
@@ -110,8 +116,7 @@ public class TopicModel {
     return new WeightedTerm(result.getObjectVector().getObject().toString(), result.getScore());
   }
 
-  private Optional<VectorSearcherCosine> getSearcher(FlagConfig flagConfig, CloseableVectorStore store,
-                                                     List<String> queryTerms) {
+  private Optional<VectorSearcherCosine> getSearcher(FlagConfig flagConfig, CloseableVectorStore store, List<String> queryTerms) {
     try {
       String[] queryArray = queryTerms.toArray(new String[0]);
       return Optional.of(new VectorSearcherCosine(store, store, null, flagConfig, queryArray));
