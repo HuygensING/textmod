@@ -148,6 +148,8 @@ public class TermIndex {
 
   /**
    * Returns the fully normalized form of a term.
+   * Note that the term is expected in basic normalized form
+   * as produced by using {@code LuceneAnalyzer()}.
    */
   public String normalize(String term) throws IOException {
     IndexSearcher searcher = new IndexSearcher(reader);
