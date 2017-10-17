@@ -58,7 +58,22 @@ public class TermIndexTest {
   }
 
   @Test
-  public void testConstruction() throws IOException {
+  public void testNormalization() throws IOException {
+    TermIndex index = getTermIndex();
+    index.addTermFile(defaultInput(), Language.LATIN);
+
+    try {
+      index.openForReading();
+      Assert.assertEquals("locorum", index.normalize("locorumque"));
+      Assert.assertEquals("locorum", index.normalize("locorum"));
+      Assert.assertEquals("unknown", index.normalize("unknown"));
+    } finally {
+      index.closeAfterReading();
+    }
+  }
+
+  @Test
+  public void testDenormalization() throws IOException {
     TermIndex index = getTermIndex();
     index.addTermFile(defaultInput(), Language.LATIN);
 
