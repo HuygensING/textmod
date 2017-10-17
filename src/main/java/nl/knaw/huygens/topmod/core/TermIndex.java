@@ -17,11 +17,9 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -153,7 +151,7 @@ public class TermIndex {
    */
   public String normalize(String term) throws IOException {
     IndexSearcher searcher = new IndexSearcher(reader);
-    Query query = new TermQuery(new Term(TERM_FIELD, term));
+    Query query = LuceneUtils.newTermQuery(TERM_FIELD, term);
     TopDocs docs = searcher.search(query, 1);
     for (ScoreDoc scoreDoc : docs.scoreDocs) {
       Document document = searcher.doc(scoreDoc.doc);
