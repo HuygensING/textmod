@@ -16,6 +16,7 @@ import pitt.search.semanticvectors.vectors.ZeroVectorException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -77,7 +78,7 @@ public class TopicModel {
   public List<WeightedTerm> suggest(String query, String model, int numTerms) {
     // model is currently ignored
     List<String> queryTerms = parseQuery(query);
-    return suggest(queryTerms, numTerms);
+    return denormalize(suggest(queryTerms, numTerms), numTerms);
   }
 
   private List<String> parseQuery(String query) {
@@ -133,6 +134,31 @@ public class TopicModel {
       LOG.warn("Unable to open VectorStore: {}", e);
       return Optional.empty();
     }
+  }
+
+  private List<WeightedTerm> denormalize(List<WeightedTerm> terms, int numTerms) {
+    List<WeightedTerm> results = new ArrayList<WeightedTerm>();
+    TermIndex termIndex = new TermIndex(getTermIndexDir());
+    try {
+      termIndex.openForReading();
+      for (WeightedTerm term : terms) {
+        List<WeightedTerm> denormalized = termIndex.denormalize(term.getText());
+        if (denormalized.isEmpty()) {
+          results.add(term);
+        } else {
+          double weight = term.getWeight();
+          for (WeightedTerm t : denormalized) {
+            results.add(new WeightedTerm(t.getText(), weight * t.getWeight()));
+          }
+        }
+      }
+    } catch (IOException e) {
+      return terms;
+    } finally {
+      termIndex.closeAfterReading();
+    }
+    Collections.sort(results);
+    return results.subList(0, Math.min(numTerms, results.size()));
   }
 
 }
