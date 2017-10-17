@@ -65,20 +65,10 @@ public class TopicModel {
 
   // ---------------------------------------------------------------------------
 
-  public void setupTermIndex() throws IOException {
-    TermIndex termIndex = new TermIndex(getTermIndexDir());
-    for (Language language : getAnalyzedLanguages()) {
-      File termFile = getTermFile(language);
-      if (termFile.canRead()) {
-        termIndex.addTermFile(termFile, language);
-      }
-    }
-  }
-
   public List<WeightedTerm> suggest(String query, String model, int numTerms) {
     // model is currently ignored
     List<String> queryTerms = parseQuery(query);
-    return denormalize(suggest(queryTerms, numTerms), numTerms);
+    return denormalizeWeightedTerms(suggest(queryTerms, numTerms), numTerms);
   }
 
   private List<String> parseQuery(String query) {
@@ -136,9 +126,28 @@ public class TopicModel {
     }
   }
 
-  private List<WeightedTerm> denormalize(List<WeightedTerm> terms, int numTerms) {
+  // -- term index -------------------------------------------------------------
+
+  private TermIndex getTermIndex() {
+    return new TermIndex(getTermIndexDir());
+  }
+
+  /**
+   * Adds terms from term files to the term index.
+   */
+  public void setupTermIndex() throws IOException {
+    TermIndex termIndex = getTermIndex();
+    for (Language language : getAnalyzedLanguages()) {
+      File termFile = getTermFile(language);
+      if (termFile.canRead()) {
+        termIndex.addTermFile(termFile, language);
+      }
+    }
+  }
+
+  public List<WeightedTerm> denormalizeWeightedTerms(List<WeightedTerm> terms, int numTerms) {
     List<WeightedTerm> results = new ArrayList<WeightedTerm>();
-    TermIndex termIndex = new TermIndex(getTermIndexDir());
+    TermIndex termIndex = getTermIndex();
     try {
       termIndex.openForReading();
       for (WeightedTerm term : terms) {
