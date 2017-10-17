@@ -7,7 +7,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,21 +36,31 @@ public class TermIndexTest {
     return new TestTermIndex();
   }
 
+  private Reader input(String... lines) {
+    // Concatenate lines, separated and terminated by newline
+    String s = Arrays.asList(lines).stream().collect(Collectors.joining("\n", "", "\n"));
+    return new StringReader(s);
+  }
+
+  private Reader defaultInput() {
+    return input(
+      "locorum;locorum;233",
+      "locorumque;locorum;2",
+      "locos;locos;32",
+      "loculi;loculi;2",
+      "loculis;loculis;10",
+      "loculos;loculos;5",
+      "locum;locum;839",
+      "locumque;locum;3",
+      "locuples;locuples;7",
+      "locupletare;locupletare;8"
+    );
+  }
+
   @Test
   public void testConstruction() throws IOException {
-    String input = "locorum;locorum;233\n" //
-        + "locorumque;locorum;2\n" //
-        + "locos;locos;32\n" //
-        + "loculi;loculi;2\n" //
-        + "loculis;loculis;10\n" //
-        + "loculos;loculos;5\n" //
-        + "locum;locum;839\n" //
-        + "locumque;locum;3\n" //
-        + "locuples;locuples;7\n" //
-        + "locupletare;locupletare;8\n";
-    StringReader reader = new StringReader(input);
     TermIndex index = getTermIndex();
-    index.addTermFile(reader, Language.LATIN);
+    index.addTermFile(defaultInput(), Language.LATIN);
 
     index.openForReading();
     List<WeightedTerm> terms = index.denormalize("locum");
