@@ -67,7 +67,7 @@ public class TopicModel {
 
   public List<WeightedTerm> suggest(String query, String model, int numTerms) {
     // model is currently ignored
-    List<String> queryTerms = parseQuery(query);
+    List<String> queryTerms = normalizeTerms(parseQuery(query));
     return denormalizeWeightedTerms(suggest(queryTerms, numTerms), numTerms);
   }
 
@@ -143,6 +143,22 @@ public class TopicModel {
         termIndex.addTermFile(termFile, language);
       }
     }
+  }
+
+  private List<String> normalizeTerms(List<String> terms) {
+    List<String> normalized = new ArrayList<String>();
+    TermIndex termIndex = getTermIndex();
+    try {
+      termIndex.openForReading();
+      for (String term : terms) {
+        normalized.add(termIndex.normalize(term));
+      }
+    } catch (IOException e) {
+      return terms;
+    } finally {
+      termIndex.closeAfterReading();
+    }
+    return normalized;
   }
 
   public List<WeightedTerm> denormalizeWeightedTerms(List<WeightedTerm> terms, int numTerms) {
