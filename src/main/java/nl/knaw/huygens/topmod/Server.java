@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.core.MediaType;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
@@ -122,12 +121,20 @@ public class Server extends Application<Config> {
   private void bootstrapTopicModel(Config config) {
     File directory = config.getBootstrapDirectory();
     for (File file : FileUtils.listZipFiles(directory)) {
-      handleZippedModel(file);
+      handleZippedModel(file, config.getDataDirectory());
     }
   }
 
-  private void handleZippedModel(File file) {
-    LOG.info("Handling: {}", file.getAbsoluteFile());
+  private void handleZippedModel(File zipFile, File dataDirectory) {
+    LOG.info("Handling: {}", zipFile.getAbsolutePath());
+    try {
+      FileUtils.unzipFile(zipFile, dataDirectory);
+      // TODO eliminate hardcoded directory name
+      new TopicModel(new File(dataDirectory, "model")).setupTermIndex();
+      zipFile.delete();
+    } catch (IOException e) {
+      LOG.error(e.getMessage());
+    }
   }
 
 }
