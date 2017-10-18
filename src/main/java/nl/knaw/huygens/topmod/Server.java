@@ -15,12 +15,14 @@ import nl.knaw.huygens.topmod.core.TopicModel;
 import nl.knaw.huygens.topmod.resources.AboutResource;
 import nl.knaw.huygens.topmod.resources.ModelsResource;
 import nl.knaw.huygens.topmod.resources.SearchTermResource;
+import nl.knaw.huygens.topmod.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.MediaType;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
@@ -74,6 +76,8 @@ public class Server extends Application<Config> {
 
     Properties buildProperties = extractBuildProperties().orElse(new Properties());
     File dataDirectory = validateDataDirectory(config.getDataDirectory());
+
+    bootstrapTopicModel(config);
     TopicModel model = new TopicModel(new File(dataDirectory, "model"));
 
     JerseyEnvironment jersey = environment.jersey();
@@ -114,4 +118,16 @@ public class Server extends Application<Config> {
     }
     return dataDirectory;
   }
+
+  private void bootstrapTopicModel(Config config) {
+    File directory = config.getBootstrapDirectory();
+    for (File file : FileUtils.listZipFiles(directory)) {
+      handleZippedModel(file);
+    }
+  }
+
+  private void handleZippedModel(File file) {
+    LOG.info("Handling: {}", file.getAbsoluteFile());
+  }
+
 }
