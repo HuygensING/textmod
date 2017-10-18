@@ -3,6 +3,7 @@ package nl.knaw.huygens.topmod.resources;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import nl.knaw.huygens.topmod.core.TopicModel;
+import nl.knaw.huygens.topmod.utils.FileUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -17,11 +18,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 @Api(ModelsResource.PATH)
 @Path(ModelsResource.PATH)
@@ -37,10 +33,6 @@ public class ModelsResource {
     this.dataDirectory = dataDirectory;
   }
 
-  private static long copyFile(InputStream stream, java.nio.file.Path temp) throws IOException {
-    return Files.copy(stream, temp, StandardCopyOption.REPLACE_EXISTING);
-  }
-
   @POST
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @ApiOperation(value = "Uploads a zip-file containing topic model data")
@@ -54,38 +46,11 @@ public class ModelsResource {
     File temp = null;
     try {
       temp = File.createTempFile("upload", "zip");
-      copyFile(stream, temp.toPath());
-      unzipFile(temp, targetDir);
+      FileUtils.copyFile(stream, temp.toPath());
+      FileUtils.unzipFile(temp, targetDir);
     } finally {
       if (temp != null) {
         temp.delete();
-      }
-    }
-  }
-
-  private void unzipFile(File file, File targetDir) throws IOException {
-    java.nio.file.Path targetPath = targetDir.toPath();
-    try (ZipFile zip = new ZipFile(file)) {
-      Enumeration<? extends ZipEntry> entries = zip.entries();
-      while (entries.hasMoreElements()) {
-        ZipEntry entry = entries.nextElement();
-        java.nio.file.Path path = targetPath.resolve(entry.getName());
-
-        // Validate pathname to ensure it doesn't escape the temp directory.
-        for (java.nio.file.Path part : path) {
-          if ("..".equals(part.toString())) {
-            throw new IOException("Pathname in zipfile may not contain ..");
-          }
-        }
-
-        if (entry.isDirectory()) {
-          if (!path.toFile().exists() && !path.toFile().mkdirs()) {
-            throw new IOException("Could not create directory " + path);
-          }
-        } else {
-          LOG.debug("Copying {}", path);
-          copyFile(zip.getInputStream(entry), path);
-        }
       }
     }
   }
