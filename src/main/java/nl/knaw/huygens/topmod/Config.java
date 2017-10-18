@@ -1,8 +1,11 @@
 package nl.knaw.huygens.topmod;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+
+import java.io.File;
 
 public class Config extends Configuration {
 
@@ -28,6 +31,16 @@ public class Config extends Configuration {
   @JsonProperty("dataDirectory")
   public void setDataDirectoryName(String directoryName) {
     this.dataDirectoryName = directoryName;
+  }
+
+  @JsonIgnore
+  public File getDataDirectory() {
+    return new File(getDataDirectoryName());
+  }
+
+  @JsonIgnore
+  public File getBootstrapDirectory() {
+    return new File(getDataDirectory(), "bootstrap");
   }
 
 }

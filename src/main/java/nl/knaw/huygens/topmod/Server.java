@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.MediaType;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,7 +73,7 @@ public class Server extends Application<Config> {
     LOG.debug("Running with config: {}", config);
 
     Properties buildProperties = extractBuildProperties().orElse(new Properties());
-    File dataDirectory = validateDataDirectory(config.getDataDirectoryName());
+    File dataDirectory = validateDataDirectory(config.getDataDirectory());
     TopicModel model = new TopicModel(new File(dataDirectory, "model"));
 
     JerseyEnvironment jersey = environment.jersey();
@@ -103,14 +104,13 @@ public class Server extends Application<Config> {
     return Optional.empty();
   }
 
-  private File validateDataDirectory(String directoryName) throws IOException {
-    File dataDirectory = new File(directoryName);
+  private File validateDataDirectory(File dataDirectory) throws IOException {
     if (dataDirectory.exists()) {
-      LOG.info("Using existing data directory: {}", directoryName);
+      LOG.info("Using existing data directory: {}", dataDirectory);
     } else if (dataDirectory.mkdirs()) {
-      LOG.info("Created data directory: {}", directoryName);
+      LOG.info("Created data directory: {}", dataDirectory);
     } else {
-      throw new IOException("Failed to create data directory " + directoryName);
+      throw new IOException("Failed to create data directory " + dataDirectory);
     }
     return dataDirectory;
   }
