@@ -86,24 +86,20 @@ public class Server extends Application<Config> {
   }
 
   private Optional<Properties> extractBuildProperties() {
-    final InputStream propertyStream = getClass().getClassLoader().getResourceAsStream("build.properties");
+    final InputStream propertyStream = getClass().getClassLoader()
+                                                 .getResourceAsStream("build.properties");
     if (propertyStream == null) {
       LOG.warn("Resource \"build.properties\" not found");
     } else {
       final Properties properties = new Properties();
       try {
         properties.load(propertyStream);
-
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("build.properties: {}", properties);
-        }
-
+        LOG.debug("build.properties: {}", properties);
         return Optional.of(properties);
       } catch (IOException e) {
         LOG.warn("Unable to load build.properties: {}", e);
       }
     }
-
     return Optional.empty();
   }
 
