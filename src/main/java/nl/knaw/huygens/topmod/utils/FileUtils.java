@@ -1,5 +1,6 @@
 package nl.knaw.huygens.topmod.utils;
 
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,7 +37,7 @@ public class FileUtils {
       try {
         closeable.close();
       } catch (IOException e) {
-        LOG.error("Error closing {}: {}", closeable.getClass().getName(), e.getMessage());
+        LOG.error("Error while closing: {}", e);
       }
     }
     return null;
@@ -57,7 +59,12 @@ public class FileUtils {
     }
   }
 
-  public static void unzipFile(File file, File targetDir) throws IOException {
+  /**
+   * Unzips the specified file to the specified target directory.
+   * Returns a list with names of the directories created in the target directory.
+   */
+  public static List<String> unzipFile(File file, File targetDir) throws IOException {
+    List<String> dirNames = Lists.newArrayList();
     Path targetPath = targetDir.toPath();
     try (ZipFile zip = new ZipFile(file)) {
       Enumeration<? extends ZipEntry> entries = zip.entries();
@@ -73,19 +80,27 @@ public class FileUtils {
         }
 
         if (entry.isDirectory()) {
-          if (!path.toFile().exists() && !path.toFile().mkdirs()) {
-            throw new IOException("Could not create directory " + path);
-          }
+          Files.createDirectories(path);
+          addDirName(dirNames, entry);
         } else {
           LOG.debug("Copying {}", path);
           copyFile(zip.getInputStream(entry), path);
         }
       }
     }
+    return dirNames;
   }
 
   public static long copyFile(InputStream stream, Path target) throws IOException {
     return Files.copy(stream, target, StandardCopyOption.REPLACE_EXISTING);
+  }
+
+  private static void addDirName(List<String> names, ZipEntry entry) {
+    Path path = Paths.get(entry.getName());
+    if (path.getNameCount() == 1) {
+      names.add(path.getName(0)
+                    .toString());
+    }
   }
 
   private FileUtils() {
