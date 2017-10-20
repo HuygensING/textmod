@@ -48,4 +48,16 @@ public class Config extends Configuration {
     return new File(getDataDirectory(), "bootstrap");
   }
 
+  private String defaultModelName = "model";
+
+  @JsonProperty("defaultModelName")
+  public String getDefaultModelName() {
+    return defaultModelName;
+  }
+
+  @JsonProperty("defaultModelName")
+  public void setDefaultModelName(String defaultModelName) {
+    this.defaultModelName = defaultModelName;
+  }
+
 }

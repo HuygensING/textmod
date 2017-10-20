@@ -43,7 +43,7 @@ public class ModelsResource {
   public void importModel(@FormDataParam("file") InputStream stream, @FormDataParam("file") FormDataContentDisposition header) throws Exception {
     LOG.debug("Importing: {}", header.getFileName());
     List<String> names = unzipStream(stream, dataDirectory);
-    if (names.contains(TopicModels.DEFAULT_MODEL_NAME)) {
+    if (names.contains(models.getDefaultModelName())) {
       models.getDefaultModel()
             .setupTermIndex();
     }

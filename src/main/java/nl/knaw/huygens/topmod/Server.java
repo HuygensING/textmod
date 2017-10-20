@@ -127,7 +127,7 @@ public class Server extends Application<Config> {
     LOG.info("Handling: {}", zipFile.getAbsolutePath());
     try {
       List<String> names = FileUtils.unzipFile(zipFile, targetDirectory);
-      if (names.contains(TopicModels.DEFAULT_MODEL_NAME)) {
+      if (names.contains(models.getDefaultModelName())) {
         models.getDefaultModel()
               .setupTermIndex();
       }
