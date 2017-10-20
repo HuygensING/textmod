@@ -19,7 +19,6 @@
     <maven-appassembler-plugin.version>1.10</maven-appassembler-plugin.version>
     <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
 
-    <commons-io.version>2.5</commons-io.version>
     <dropwizard.version>1.2.0</dropwizard.version>
     <junit.version>4.12</junit.version>
     <logback.version>4.11</logback.version>
