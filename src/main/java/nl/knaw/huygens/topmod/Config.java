@@ -39,6 +39,11 @@ public class Config extends Configuration {
   }
 
   @JsonIgnore
+  public File getModelsDirectory() {
+    return getDataDirectory();
+  }
+
+  @JsonIgnore
   public File getBootstrapDirectory() {
     return new File(getDataDirectory(), "bootstrap");
   }
