@@ -3,6 +3,7 @@ package nl.knaw.huygens.topmod.resources;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import nl.knaw.huygens.topmod.core.TopicModel;
+import nl.knaw.huygens.topmod.core.TopicModels;
 import nl.knaw.huygens.topmod.utils.FileUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 @Api(ModelsResource.PATH)
 @Path(ModelsResource.PATH)
@@ -27,9 +29,11 @@ public class ModelsResource {
 
   private static final Logger LOG = LoggerFactory.getLogger(ModelsResource.class);
 
+  private final TopicModels models;
   private final File dataDirectory;
 
-  public ModelsResource(File dataDirectory) {
+  public ModelsResource(TopicModels models, File dataDirectory) {
+    this.models = models;
     this.dataDirectory = dataDirectory;
   }
 
@@ -38,16 +42,19 @@ public class ModelsResource {
   @ApiOperation(value = "Uploads a zip-file containing topic model data")
   public void importModel(@FormDataParam("file") InputStream stream, @FormDataParam("file") FormDataContentDisposition header) throws Exception {
     LOG.debug("Importing: {}", header.getFileName());
-    unzipStream(stream, dataDirectory);
-    new TopicModel(new File(dataDirectory, "model")).setupTermIndex();
+    List<String> names = unzipStream(stream, dataDirectory);
+    if (names.contains(TopicModels.DEFAULT_MODEL_NAME)) {
+      models.getDefaultModel()
+            .setupTermIndex();
+    }
   }
 
-  private void unzipStream(InputStream stream, File targetDir) throws IOException {
+  private List<String> unzipStream(InputStream stream, File targetDir) throws IOException {
     File temp = null;
     try {
       temp = File.createTempFile("upload", "zip");
       FileUtils.copyFile(stream, temp.toPath());
-      FileUtils.unzipFile(temp, targetDir);
+      return FileUtils.unzipFile(temp, targetDir);
     } finally {
       if (temp != null) {
         temp.delete();

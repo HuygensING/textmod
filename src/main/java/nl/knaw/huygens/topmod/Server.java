@@ -11,7 +11,7 @@ import io.swagger.annotations.Contact;
 import io.swagger.annotations.Info;
 import io.swagger.annotations.License;
 import io.swagger.annotations.SwaggerDefinition;
-import nl.knaw.huygens.topmod.core.TopicModel;
+import nl.knaw.huygens.topmod.core.TopicModels;
 import nl.knaw.huygens.topmod.resources.AboutResource;
 import nl.knaw.huygens.topmod.resources.ModelsResource;
 import nl.knaw.huygens.topmod.resources.SearchTermResource;
@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -53,6 +54,8 @@ public class Server extends Application<Config> {
     new Server().run(args);
   }
 
+  private TopicModels models;
+
   @Override
   public String getName() {
     return "topmod";
@@ -76,13 +79,13 @@ public class Server extends Application<Config> {
     Properties buildProperties = extractBuildProperties().orElse(new Properties());
     File dataDirectory = validateDataDirectory(config.getDataDirectory());
 
-    bootstrapTopicModel(config);
-    TopicModel model = new TopicModel(new File(dataDirectory, "model"));
+    models = new TopicModels(config);
+    bootstrapTopicModels(config);
 
     JerseyEnvironment jersey = environment.jersey();
     jersey.register(new AboutResource(getName(), buildProperties));
-    jersey.register(new ModelsResource(dataDirectory));
-    jersey.register(new SearchTermResource(model));
+    jersey.register(new ModelsResource(models, dataDirectory));
+    jersey.register(new SearchTermResource(models.getDefaultModel()));
   }
 
   private Optional<Properties> extractBuildProperties() {
@@ -114,19 +117,20 @@ public class Server extends Application<Config> {
     return dataDirectory;
   }
 
-  private void bootstrapTopicModel(Config config) {
-    File directory = config.getBootstrapDirectory();
-    for (File file : FileUtils.listZipFiles(directory)) {
-      handleZippedModel(file, config.getDataDirectory());
-    }
+  private void bootstrapTopicModels(Config config) {
+    LOG.info("Looking for zipped models in: {}", config.getBootstrapDirectory());
+    FileUtils.listZipFiles(config.getBootstrapDirectory())
+             .forEach(file -> handleZipFile(file, config.getDataDirectory()));
   }
 
-  private void handleZippedModel(File zipFile, File dataDirectory) {
+  private void handleZipFile(File zipFile, File targetDirectory) {
     LOG.info("Handling: {}", zipFile.getAbsolutePath());
     try {
-      FileUtils.unzipFile(zipFile, dataDirectory);
-      // TODO eliminate hardcoded directory name
-      new TopicModel(new File(dataDirectory, "model")).setupTermIndex();
+      List<String> names = FileUtils.unzipFile(zipFile, targetDirectory);
+      if (names.contains(TopicModels.DEFAULT_MODEL_NAME)) {
+        models.getDefaultModel()
+              .setupTermIndex();
+      }
       zipFile.delete();
     } catch (IOException e) {
       LOG.error(e.getMessage());
