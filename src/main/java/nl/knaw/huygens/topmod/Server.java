@@ -85,7 +85,7 @@ public class Server extends Application<Config> {
     JerseyEnvironment jersey = environment.jersey();
     jersey.register(new AboutResource(getName(), buildProperties));
     jersey.register(new ModelsResource(models, dataDirectory));
-    jersey.register(new SearchTermResource(models.getDefaultModel()));
+    jersey.register(new SearchTermResource(models));
   }
 
   private Optional<Properties> extractBuildProperties() {

@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import nl.knaw.huygens.topmod.api.Suggestion;
 import nl.knaw.huygens.topmod.core.TopicModel;
+import nl.knaw.huygens.topmod.core.TopicModels;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,10 +25,10 @@ public class SearchTermResource {
 
   private static final Logger LOG = LoggerFactory.getLogger(SearchTermResource.class);
 
-  private final TopicModel topicModel;
+  private final TopicModels models;
 
-  public SearchTermResource(TopicModel model) {
-    topicModel = model;
+  public SearchTermResource(TopicModels models) {
+    this.models = models;
   }
 
   @POST
@@ -35,7 +36,8 @@ public class SearchTermResource {
   @ApiOperation(value = "Calculates search term suggestions")
   public Suggestion getSearchTermSuggestions(SuggestParams params) {
     LOG.debug("Getting suggestions for '{}'", params);
-    return new Suggestion(topicModel.suggest(params.query, params.model, params.maxTerms));
+    TopicModel model = models.getDefaultModel();
+    return new Suggestion(model.suggest(params.query, params.maxTerms));
   }
 
   static class SuggestParams {

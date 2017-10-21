@@ -2,7 +2,6 @@ package nl.knaw.huygens.topmod.resources;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import nl.knaw.huygens.topmod.core.TopicModel;
 import nl.knaw.huygens.topmod.core.TopicModels;
 import nl.knaw.huygens.topmod.utils.FileUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;

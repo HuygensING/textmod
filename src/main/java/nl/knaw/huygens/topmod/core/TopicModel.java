@@ -65,8 +65,7 @@ public class TopicModel {
 
   // ---------------------------------------------------------------------------
 
-  public List<WeightedTerm> suggest(String query, String model, int numTerms) {
-    // model is currently ignored
+  public List<WeightedTerm> suggest(String query, int numTerms) {
     List<String> queryTerms = normalizeTerms(parseQuery(query));
     return denormalizeWeightedTerms(suggest(queryTerms, numTerms), numTerms);
   }
