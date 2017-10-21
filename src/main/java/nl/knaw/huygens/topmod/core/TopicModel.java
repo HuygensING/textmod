@@ -3,7 +3,6 @@ package nl.knaw.huygens.topmod.core;
 import com.google.common.collect.ImmutableList;
 import nl.knaw.huygens.topmod.core.lucene.LuceneAnalyzer;
 import nl.knaw.huygens.topmod.core.text.Language;
-import nl.knaw.huygens.topmod.core.text.ListTokenTextHandler;
 import nl.knaw.huygens.topmod.core.text.TextAnalyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import pitt.search.semanticvectors.vectors.ZeroVectorException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,13 +24,13 @@ import java.util.stream.Collectors;
 public class TopicModel {
   private static final Logger LOG = LoggerFactory.getLogger(TopicModel.class);
 
-  // -- directories and files --------------------------------------------------
-
   private final File modelDirectory;
 
   public TopicModel(File modelDirectory) {
     this.modelDirectory = modelDirectory;
   }
+
+  // ---------------------------------------------------------------------------
 
   public File getDocVectors() {
     return new File(modelDirectory, "docvectors.bin");
@@ -54,8 +52,6 @@ public class TopicModel {
     return new File(modelDirectory, "index");
   }
 
-  // ---------------------------------------------------------------------------
-
   /**
    * Returns the languages that are currently dealt with in topic modelling.
    */
@@ -66,44 +62,51 @@ public class TopicModel {
   // ---------------------------------------------------------------------------
 
   public List<WeightedTerm> suggest(String query, int numTerms) {
-    List<String> queryTerms = normalizeTerms(parseQuery(query));
-    return denormalizeWeightedTerms(suggest(queryTerms, numTerms), numTerms);
+    List<String> queryTerms = TextAnalyzer.parse(new LuceneAnalyzer(), query);
+    List<String> normQueryTerms = normalizeTerms(queryTerms);
+    // ensure sufficient number of suggestions, because of reduction
+    List<WeightedTerm> normSuggestions = suggest(normQueryTerms, numTerms + queryTerms.size());
+    List<WeightedTerm> suggestions = denormalizeWeightedTerms(normSuggestions);
+    return reduce(suggestions, queryTerms, numTerms);
   }
 
-  private List<String> parseQuery(String query) {
-    try {
-      ListTokenTextHandler handler = new ListTokenTextHandler();
-      TextAnalyzer.newInstance(new LuceneAnalyzer(), handler).analyze(query);
-      return handler.getTokens();
-    } catch (IOException e) {
-      return Arrays.asList(query.toLowerCase().split("\\s+"));
-    }
+  /**
+   * Eliminate specified query terms from suggestions.
+   */
+  private List<WeightedTerm> reduce(List<WeightedTerm> suggestions, List<String> queryTerms, int numTerms) {
+    return suggestions.stream()
+                      .filter(suggestion -> !queryTerms.contains(suggestion.getText()))
+                      .sorted() // by weight
+                      .limit(numTerms)
+                      .collect(Collectors.toList());
   }
+
+  // -- semantic vectors -------------------------------------------------------
 
   private List<WeightedTerm> suggest(List<String> queryTerms, int numTerms) {
     Optional<List<WeightedTerm>> results = Optional.empty();
-
     if (!queryTerms.isEmpty() && numTerms > 0 && getTermVectors().exists()) {
       final FlagConfig flagConfig = FlagConfig.getFlagConfig(null);
-
       // CloseableVectorStore does not implement AutoCloseable, so collectAndClose instead of try-with-resources :-(
       results = openStore(flagConfig).flatMap(store -> collectAndClose(flagConfig, store, queryTerms, numTerms));
     }
-
     return results.orElse(Collections.emptyList());
   }
 
   private Optional<List<WeightedTerm>> collectAndClose(FlagConfig flagConfig, CloseableVectorStore store, List<String> queryTerms, int numTerms) {
-    Optional<List<WeightedTerm>> results = getSearcher(flagConfig, store, queryTerms).map(searcher -> searcher.getNearestNeighbors(numTerms)).map(
-        neighbours -> neighbours.stream().map(this::toWeightedTerm).collect(Collectors.toList()));
-
+    Optional<List<WeightedTerm>> results = getSearcher(flagConfig, store, queryTerms).map(searcher -> searcher.getNearestNeighbors(numTerms))
+                                                                                     .map(neighbours -> neighbours.stream()
+                                                                                                                  .map(this::toWeightedTerm)
+                                                                                                                  .collect(Collectors.toList()));
     store.close();
-
     return results;
   }
 
   private WeightedTerm toWeightedTerm(SearchResult result) {
-    return new WeightedTerm(result.getObjectVector().getObject().toString(), result.getScore());
+    String text = result.getObjectVector()
+                        .getObject()
+                        .toString();
+    return new WeightedTerm(text, result.getScore());
   }
 
   private Optional<VectorSearcherCosine> getSearcher(FlagConfig flagConfig, CloseableVectorStore store, List<String> queryTerms) {
@@ -160,7 +163,7 @@ public class TopicModel {
     return normalized;
   }
 
-  public List<WeightedTerm> denormalizeWeightedTerms(List<WeightedTerm> terms, int numTerms) {
+  public List<WeightedTerm> denormalizeWeightedTerms(List<WeightedTerm> terms) {
     List<WeightedTerm> results = new ArrayList<WeightedTerm>();
     TermIndex termIndex = getTermIndex();
     try {
@@ -181,8 +184,7 @@ public class TopicModel {
     } finally {
       termIndex.closeAfterReading();
     }
-    Collections.sort(results);
-    return results.subList(0, Math.min(numTerms, results.size()));
+    return results;
   }
 
 }
