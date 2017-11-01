@@ -3,7 +3,6 @@ package nl.knaw.huygens.textmod.resources;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import jersey.repackaged.com.google.common.collect.Lists;
 import nl.knaw.huygens.tei.Documents;
 import nl.knaw.huygens.textmod.api.Keyword;
 import nl.knaw.huygens.textmod.api.Keywords;
@@ -17,6 +16,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import java.util.Arrays;
 
 @Api(KeywordsResource.PATH)
 @Path(KeywordsResource.PATH)
@@ -43,9 +44,9 @@ public class KeywordsResource {
   }
 
   private Keywords getDefaultResult() {
-    Keyword kw1 = new Keyword(0.9, Lists.newArrayList("de", "het", "een"));
-    Keyword kw2 = new Keyword(0.8, Lists.newArrayList("le", "la"));
-    return new Keywords(Lists.newArrayList(kw1, kw2));
+    Keyword kw1 = new Keyword(0.9, Arrays.asList("de", "het", "een"));
+    Keyword kw2 = new Keyword(0.8, Arrays.asList("le", "la"));
+    return new Keywords(Arrays.asList(kw1, kw2));
   }
 
 }
