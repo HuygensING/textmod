@@ -61,3 +61,13 @@ N.B. Topic model files can be uploaded in zipped form, but this is now deprecate
 
   curl -F "file=@model.zip;filename=model.zip" http://localhost:8080/models
  
+  curl -X PUT -H "Content-Type: application/xml"  \
+    http://localhost:8080/keywords -d @example.xml
+ 
+Keywords
+--------
+
+The new endpoint for determining keywords can be tested as follows::
+  curl -X POST -H "Content-Type: application/xml" \
+    http://localhost:8080/keywords -d @example.xml
+ 

@@ -13,6 +13,7 @@ import io.swagger.annotations.License;
 import io.swagger.annotations.SwaggerDefinition;
 import nl.knaw.huygens.textmod.core.TopicModels;
 import nl.knaw.huygens.textmod.resources.AboutResource;
+import nl.knaw.huygens.textmod.resources.KeywordsResource;
 import nl.knaw.huygens.textmod.resources.ModelsResource;
 import nl.knaw.huygens.textmod.resources.SearchTermResource;
 import nl.knaw.huygens.textmod.utils.FileUtils;
@@ -84,6 +85,7 @@ public class Server extends Application<Config> {
 
     JerseyEnvironment jersey = environment.jersey();
     jersey.register(new AboutResource(getName(), buildProperties));
+    jersey.register(new KeywordsResource());
     jersey.register(new ModelsResource(models, dataDirectory));
     jersey.register(new SearchTermResource(models));
   }
