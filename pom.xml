@@ -54,7 +54,7 @@
               <programs>
                 <program>
                   <id>topmod</id>
-                  <mainClass>nl.knaw.huygens.topmod.Server</mainClass>
+                  <mainClass>nl.knaw.huygens.textmod.Server</mainClass>
                 </program>
               </programs>
             </configuration>
