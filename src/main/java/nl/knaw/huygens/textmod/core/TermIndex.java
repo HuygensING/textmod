@@ -1,11 +1,9 @@
 package nl.knaw.huygens.textmod.core;
 
-import com.google.common.collect.Lists;
 import nl.knaw.huygens.textmod.core.lucene.LuceneAnalyzer;
 import nl.knaw.huygens.textmod.core.lucene.LuceneUtils;
 import nl.knaw.huygens.textmod.core.text.Language;
 import nl.knaw.huygens.textmod.core.text.Token;
-import nl.knaw.huygens.textmod.core.text.TokenHandler;
 import nl.knaw.huygens.textmod.core.text.Tokens;
 import nl.knaw.huygens.textmod.utils.CSVImporter;
 import nl.knaw.huygens.textmod.utils.FileUtils;
@@ -31,6 +29,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TermIndex {
 
@@ -179,17 +178,11 @@ public class TermIndex {
   }
 
   private List<WeightedTerm> tokensToList(Tokens tokens) {
-    final List<WeightedTerm> list = Lists.newArrayList();
-    final double factor = 1.0 / tokens.getTotalTokenCount();
-    tokens.handleSorted(new TokenHandler() {
-      @Override
-      public void accept(Token token) {
-        String text = token.getText();
-        double weight = factor * token.getCount();
-        list.add(new WeightedTerm(text, weight));
-      }
-    }, Token.COUNT_COMPARATOR);
-    return list;
+    double factor = 1.0 / tokens.getTotalTokenCount();
+    return tokens.stream()
+                 .sorted(Token.COUNT_COMPARATOR)
+                 .map(t -> new WeightedTerm(t.getText(), factor * t.getCount()))
+                 .collect(Collectors.toList());
   }
 
 }

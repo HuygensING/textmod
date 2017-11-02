@@ -3,7 +3,17 @@ package nl.knaw.huygens.textmod.core.text;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Comparator;
+import java.util.stream.Collectors;
+
 public class TokensTest {
+
+  private String concatenate(Tokens tokens, Comparator<Token> comparator) {
+    return tokens.stream()
+                 .sorted(comparator)
+                 .map(Token::getText)
+                 .collect(Collectors.joining());
+  }
 
   @Test
   public void testCountsForEmptyCollection() {
@@ -24,9 +34,7 @@ public class TokensTest {
   public void testSortByCount() {
     Tokens tokens = new Tokens();
     tokens.increment(new String[] { "a", "b", "b" });
-    Concatenator concatenator = new Concatenator();
-    tokens.handleSorted(concatenator, Token.COUNT_COMPARATOR);
-    Assert.assertEquals("ba", concatenator.toString());
+    Assert.assertEquals("ba", concatenate(tokens, Token.COUNT_COMPARATOR));
   }
 
   @Test
@@ -37,22 +45,7 @@ public class TokensTest {
           .setValue(1.0);
     tokens.get("b")
           .setValue(2.0);
-    Concatenator concatenator = new Concatenator();
-    tokens.handleSorted(concatenator, Token.VALUE_COMPARATOR);
-    Assert.assertEquals("ba", concatenator.toString());
+    Assert.assertEquals("ba", concatenate(tokens, Token.VALUE_COMPARATOR));
   }
 
-  private static class Concatenator implements TokenHandler {
-    private StringBuilder builder = new StringBuilder();
-
-    @Override
-    public void accept(Token token) {
-      builder.append(token.getText());
-    }
-
-    @Override
-    public String toString() {
-      return builder.toString();
-    }
-  }
 }

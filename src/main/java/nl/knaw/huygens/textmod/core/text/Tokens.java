@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * A collection of tokens.
@@ -86,9 +87,9 @@ public class Tokens {
     handleSorted(handler, comparator, Long.MAX_VALUE);
   }
 
-  public void handle(TokenHandler handler) {
-    tokens.values()
-          .forEach(handler::accept);
+  public Stream<Token> stream() {
+    return tokens.values()
+                 .stream();
   }
 
   // --- I/O -------------------------------------------------------------------
