@@ -11,7 +11,7 @@ public class ListTokenTextHandler extends DefaultTokenTextHandler {
   }
 
   @Override
-  public void handle(String text) {
+  public void accept(String text) {
     tokens.add(text);
   }
 

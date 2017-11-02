@@ -9,6 +9,6 @@ public interface TokenTextHandler {
 
   void endSegment();
 
-  void handle(String text);
+  void accept(String text);
 
 }

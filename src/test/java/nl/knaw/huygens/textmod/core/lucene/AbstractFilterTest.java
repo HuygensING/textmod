@@ -30,7 +30,7 @@ public abstract class AbstractFilterTest {
     }
 
     @Override
-    public void handle(String text) {
+    public void accept(String text) {
       builder.append(text).append("|");
     }
 

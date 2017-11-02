@@ -50,7 +50,7 @@ public class TextAnalyzer<T extends TokenTextHandler> {
       tokenTextHandler.newSegment(segmentId);
       while (stream.incrementToken()) {
         String term = new String(attribute.buffer(), 0, attribute.length());
-        tokenTextHandler.handle(term);
+        tokenTextHandler.accept(term);
       }
       tokenTextHandler.endSegment();
     }
