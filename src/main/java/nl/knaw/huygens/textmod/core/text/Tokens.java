@@ -41,7 +41,7 @@ public class Tokens implements Serializable {
     tokens.put(token.getText(), token);
   }
 
-  public void increment(String key, int value) {
+  public void increment(String key, long value) {
     Token token = tokens.get(key);
     if (token == null) {
       token = new Token(key);
@@ -60,19 +60,20 @@ public class Tokens implements Serializable {
     }
   }
 
-  public int getTotalTokenCount() {
-    int total = 0;
+  public long getTotalTokenCount() {
+    long total = 0;
     for (Map.Entry<String, Token> entry : tokens.entrySet()) {
-      total += entry.getValue().getCount();
+      total += entry.getValue()
+                    .getCount();
     }
     return total;
   }
 
-  public int getUniqueTokenCount() {
+  public long getUniqueTokenCount() {
     return tokens.size();
   }
 
-  public int getCountFor(String key) {
+  public long getCountFor(String key) {
     Token token = tokens.get(key);
     return (token != null) ? token.getCount() : 0;
   }
@@ -86,7 +87,8 @@ public class Tokens implements Serializable {
     handleSorted(handler, new Comparator<Token>() {
       @Override
       public int compare(Token token1, Token token2) {
-        return token1.getText().compareTo(token2.getText());
+        return token1.getText()
+                     .compareTo(token2.getText());
       }
     });
   }
@@ -95,7 +97,7 @@ public class Tokens implements Serializable {
     handleSorted(handler, new Comparator<Token>() {
       @Override
       public int compare(Token token1, Token token2) {
-        int diff = token2.getCount() - token1.getCount();
+        long diff = token2.getCount() - token1.getCount();
         if (diff < 0) {
           return -1;
         } else if (diff > 0) {

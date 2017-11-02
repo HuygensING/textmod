@@ -12,29 +12,29 @@ public class Token implements Serializable {
   /** The text identifying the token. */
   private final String text;
   /** The number of occurrences of this token. */
-  private int count;
+  private long count;
   /** A (statistical) value associated with this token. */
   private double value;
 
-  public Token(String text, int count) {
+  public Token(String text, long count, double value) {
     this.text = text;
     this.count = count;
-    value = 0.0;
+    this.value = value;
   }
 
   public Token(String text) {
-    this(text, 0);
+    this(text, 0, 0.0);
   }
 
   public String getText() {
     return text;
   }
 
-  public int getCount() {
+  public long getCount() {
     return count;
   }
 
-  public void increment(int value) {
+  public void increment(long value) {
     count += value;
   }
 
