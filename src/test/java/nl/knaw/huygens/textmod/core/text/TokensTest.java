@@ -46,9 +46,8 @@ public class TokensTest {
     private StringBuilder builder = new StringBuilder();
 
     @Override
-    public boolean handle(Token token) {
+    public void accept(Token token) {
       builder.append(token.getText());
-      return true;
     }
 
     @Override

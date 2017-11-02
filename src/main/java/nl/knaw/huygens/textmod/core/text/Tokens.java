@@ -1,8 +1,5 @@
 package nl.knaw.huygens.textmod.core.text;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,9 +7,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,7 +22,7 @@ public class Tokens implements Serializable {
   private Map<String, Token> tokens;
 
   public Tokens() {
-    tokens = Maps.newHashMap();
+    tokens = new HashMap<String, Token>();
   }
 
   public Token get(String key) {
@@ -61,12 +57,10 @@ public class Tokens implements Serializable {
   }
 
   public long getTotalTokenCount() {
-    long total = 0;
-    for (Map.Entry<String, Token> entry : tokens.entrySet()) {
-      total += entry.getValue()
-                    .getCount();
-    }
-    return total;
+    return tokens.values()
+                 .stream()
+                 .mapToLong(Token::getCount)
+                 .sum();
   }
 
   public long getUniqueTokenCount() {
@@ -83,22 +77,21 @@ public class Tokens implements Serializable {
     return (token != null) ? token.getValue() : 0.0;
   }
 
+  public void handleSorted(TokenHandler handler, Comparator<Token> comparator, long maxSize) {
+    tokens.values()
+          .stream()
+          .sorted(comparator)
+          .limit(maxSize)
+          .forEach(handler::accept);
+  }
+
   public void handleSorted(TokenHandler handler, Comparator<Token> comparator) {
-    List<Token> list = Lists.newArrayList(tokens.values());
-    Collections.sort(list, comparator);
-    for (Token token : list) {
-      if (!handler.handle(token)) {
-        break;
-      }
-    }
+    handleSorted(handler, comparator, Long.MAX_VALUE);
   }
 
   public void handle(TokenHandler handler) {
-    for (Token token : tokens.values()) {
-      if (!handler.handle(token)) {
-        break;
-      }
-    }
+    tokens.values()
+          .forEach(handler::accept);
   }
 
   @SuppressWarnings("unchecked")

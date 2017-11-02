@@ -180,14 +180,13 @@ public class TermIndex {
 
   private List<WeightedTerm> tokensToList(Tokens tokens) {
     final List<WeightedTerm> list = Lists.newArrayList();
-    double factor = 1.0 / tokens.getTotalTokenCount();
+    final double factor = 1.0 / tokens.getTotalTokenCount();
     tokens.handleSorted(new TokenHandler() {
       @Override
-      public boolean handle(Token token) {
+      public void accept(Token token) {
         String text = token.getText();
         double weight = factor * token.getCount();
         list.add(new WeightedTerm(text, weight));
-        return true;
       }
     }, Token.COUNT_COMPARATOR);
     return list;
