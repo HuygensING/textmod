@@ -170,7 +170,9 @@ public class TermIndex {
     Tokens tokens = new Tokens();
     for (ScoreDoc scoreDoc : docs.scoreDocs) {
       Document document = searcher.doc(scoreDoc.doc);
-      int count = document.getField(FREQ_FIELD).numericValue().intValue();
+      int count = document.getField(FREQ_FIELD)
+                          .numericValue()
+                          .intValue();
       tokens.increment(document.get(TERM_FIELD), count);
     }
     return tokensToList(tokens);
@@ -179,7 +181,7 @@ public class TermIndex {
   private List<WeightedTerm> tokensToList(Tokens tokens) {
     final List<WeightedTerm> list = Lists.newArrayList();
     double factor = 1.0 / tokens.getTotalTokenCount();
-    tokens.handleSortedByCount(new TokenHandler() {
+    tokens.handleSorted(new TokenHandler() {
       @Override
       public boolean handle(Token token) {
         String text = token.getText();
@@ -187,7 +189,7 @@ public class TermIndex {
         list.add(new WeightedTerm(text, weight));
         return true;
       }
-    });
+    }, Token.COUNT_COMPARATOR);
     return list;
   }
 

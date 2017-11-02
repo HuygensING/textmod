@@ -1,5 +1,8 @@
 package nl.knaw.huygens.textmod.core.text;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,9 +15,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * A collection of tokens.
@@ -81,48 +81,6 @@ public class Tokens implements Serializable {
   public double getValueFor(String key) {
     Token token = tokens.get(key);
     return (token != null) ? token.getValue() : 0.0;
-  }
-
-  public void handleSortedByText(TokenHandler handler) {
-    handleSorted(handler, new Comparator<Token>() {
-      @Override
-      public int compare(Token token1, Token token2) {
-        return token1.getText()
-                     .compareTo(token2.getText());
-      }
-    });
-  }
-
-  public void handleSortedByCount(TokenHandler handler) {
-    handleSorted(handler, new Comparator<Token>() {
-      @Override
-      public int compare(Token token1, Token token2) {
-        long diff = token2.getCount() - token1.getCount();
-        if (diff < 0) {
-          return -1;
-        } else if (diff > 0) {
-          return +1;
-        } else {
-          return 0;
-        }
-      }
-    });
-  }
-
-  public void handleSortedByValue(TokenHandler handler) {
-    handleSorted(handler, new Comparator<Token>() {
-      @Override
-      public int compare(Token token1, Token token2) {
-        double diff = token2.getValue() - token1.getValue();
-        if (diff < 0) {
-          return -1;
-        } else if (diff > 0) {
-          return +1;
-        } else {
-          return 0;
-        }
-      }
-    });
   }
 
   public void handleSorted(TokenHandler handler, Comparator<Token> comparator) {

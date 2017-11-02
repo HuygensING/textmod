@@ -1,8 +1,5 @@
 package nl.knaw.huygens.textmod.core.text;
 
-import nl.knaw.huygens.textmod.core.text.Token;
-import nl.knaw.huygens.textmod.core.text.TokenHandler;
-import nl.knaw.huygens.textmod.core.text.Tokens;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,7 +25,7 @@ public class TokensTest {
     Tokens tokens = new Tokens();
     tokens.increment(new String[] { "a", "b", "b" });
     Concatenator concatenator = new Concatenator();
-    tokens.handleSortedByCount(concatenator);
+    tokens.handleSorted(concatenator, Token.COUNT_COMPARATOR);
     Assert.assertEquals("ba", concatenator.toString());
   }
 
@@ -36,10 +33,12 @@ public class TokensTest {
   public void testSortbyValue() {
     Tokens tokens = new Tokens();
     tokens.increment(new String[] { "a", "a", "b" });
-    tokens.get("a").setValue(1.0);
-    tokens.get("b").setValue(2.0);
+    tokens.get("a")
+          .setValue(1.0);
+    tokens.get("b")
+          .setValue(2.0);
     Concatenator concatenator = new Concatenator();
-    tokens.handleSortedByValue(concatenator);
+    tokens.handleSorted(concatenator, Token.VALUE_COMPARATOR);
     Assert.assertEquals("ba", concatenator.toString());
   }
 

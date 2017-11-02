@@ -1,6 +1,7 @@
 package nl.knaw.huygens.textmod.core.text;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * Represents a token in a text. This may be a word, or an n-gram.
@@ -49,5 +50,36 @@ public class Token implements Serializable {
   public void setValue(double value) {
     this.value = value;
   }
+
+  /**
+   * A comparator for sorting tokens by text, in natural order.
+   */
+  public static final Comparator<Token> TEXT_COMPARATOR = new Comparator<Token>() {
+    @Override
+    public int compare(Token token1, Token token2) {
+      return token1.getText()
+                   .compareTo(token2.getText());
+    }
+  };
+
+  /**
+   * A comparator for sorting tokens by count, from high to low.
+   */
+  public static final Comparator<Token> COUNT_COMPARATOR = new Comparator<Token>() {
+    @Override
+    public int compare(Token token1, Token token2) {
+      return Long.compare(token2.getCount(), token1.getCount());
+    }
+  };
+
+  /**
+   * A comparator for sorting tokens by value, from high to low.
+   */
+  public static final Comparator<Token> VALUE_COMPARATOR = new Comparator<Token>() {
+    @Override
+    public int compare(Token token1, Token token2) {
+      return Double.compare(token2.getValue(), token1.getValue());
+    }
+  };
 
 }
