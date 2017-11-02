@@ -1,14 +1,11 @@
 package nl.knaw.huygens.textmod.core.text;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Represents a token in a text. This may be a word, or an n-gram.
  */
-public class Token implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class Token {
 
   /** The text identifying the token. */
   private final String text;

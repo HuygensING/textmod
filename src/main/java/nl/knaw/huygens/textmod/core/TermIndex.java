@@ -87,7 +87,7 @@ public class TermIndex {
 
   public void addTermFile(File termFile, Language language) throws IOException {
     LOG.info("Add term file: {}", termFile.getName());
-    addTermFile(FileUtils.readerForFile(termFile), language);
+    addTermFile(FileUtils.readerFor(termFile), language);
   }
 
   public void addTermFile(Reader reader, Language language) throws IOException {

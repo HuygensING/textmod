@@ -1,13 +1,12 @@
 package nl.knaw.huygens.textmod.core.text;
 
+import nl.knaw.huygens.textmod.utils.CSVImporter;
+import nl.knaw.huygens.textmod.utils.FileUtils;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.PrintWriter;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -15,9 +14,7 @@ import java.util.Set;
 /**
  * A collection of tokens.
  */
-public class Tokens implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class Tokens {
 
   private Map<String, Token> tokens;
 
@@ -94,21 +91,23 @@ public class Tokens implements Serializable {
           .forEach(handler::accept);
   }
 
-  @SuppressWarnings("unchecked")
-  public void read(File file) throws IOException {
-    try {
-      ObjectInputStream stream = new ObjectInputStream(new FileInputStream(file));
-      tokens = (Map<String, Token>) stream.readObject();
-      stream.close();
-    } catch (ClassNotFoundException e) {
-      throw new IOException("Failed to read tokens", e);
+  // --- I/O -------------------------------------------------------------------
+
+  public void write(File file) {
+    try (PrintWriter out = FileUtils.printWriterFor(file)) {
+      out.printf("--\n-- Token counts\n-- %s\n--\n", new Date());
+      handleSorted(t -> out.printf("%s;%d%n", t.getText(), t.getCount()), Token.TEXT_COMPARATOR);
     }
   }
 
-  public void write(File file) throws IOException {
-    ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(file));
-    stream.writeObject(tokens);
-    stream.close();
+  public void read(File file) throws Exception {
+    CSVImporter importer = new CSVImporter() {
+      @Override
+      protected void handleLine(String[] items) throws Exception {
+        increment(items[0], Long.parseLong(items[1]));
+      }
+    };
+    importer.handleFile(file, 2);
   }
 
 }

@@ -29,7 +29,7 @@ public abstract class CSVImporter {
   }
 
   public void handleFile(File file, int minItemsPerLine) throws Exception {
-    handleFile(FileUtils.readerForFile(file), minItemsPerLine);
+    handleFile(FileUtils.readerFor(file), minItemsPerLine);
   }
 
   public void handleFile(Reader reader, int minItemsPerLine) throws Exception {

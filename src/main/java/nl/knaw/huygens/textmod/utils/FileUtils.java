@@ -11,6 +11,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,8 +29,19 @@ public class FileUtils {
 
   private static final Logger LOG = LoggerFactory.getLogger(FileUtils.class);
 
-  public static Reader readerForFile(File file) throws IOException {
+  public static Reader readerFor(File file) throws IOException {
     return new InputStreamReader(new FileInputStream(file), "UTF-8");
+  }
+
+  /**
+   * Returns a {@code PrintWriter} for the specified file.
+   */
+  public static PrintWriter printWriterFor(File file) {
+    try {
+      return new PrintWriter(file, "UTF-8");
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to create PrintWriter: " + e.getMessage());
+    }
   }
 
   public static <T extends Closeable> T closeQuietly(T closeable) {
