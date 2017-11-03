@@ -1,3 +1,52 @@
+<TEI>
+<teiHeader>
+<!-- 2920. 1637 januari 12. Van Ch. Marini.<anchor type="note" n="21-1"/> -->
+<meta type="uuid" value="4271645b-1dca-4db8-84ea-290f3b501c9a"/>
+<meta type="id" value="2920"/>
+<meta type="date" value="1637-01-12"/>
+<meta type="sender" value="marin.charles.-1651"/>
+<meta type="senderloc" value="se:chiavenna.ita"/>
+<meta type="recipient" value="groot.hugo.1583-1645"/>
+<meta type="recipientloc" value="se:paris.fra" resp="inferred"/>
+</teiHeader>
 <text>
-This is a simple text for testing.
+<body>
+<div xml:id="div-1" xml:lang="fr" type="artifact" subtype="letter">
+<opener>
+<p xml:id="p-1">Monsieur,</p>
+</opener>
+<p xml:id="p-2">Vos lettres du 2<anchor type="note" n="21-2"/>, 9<anchor type="note" n="21-3"/>, 15<anchor type="note" n="21-4"/> et 13/23 de Xbre<anchor type="note" n="21-5"/> m'ont esté bien rendues, en contr' eschange i'espère que vous aurez receu les mienes et surtout celle qui parles des affaires de <placeName>Transylvanie</placeName><anchor type="note" n="21-6"/> dont ie vous prie avoir le soin convenable afin que le gran chancelier<anchor type="note" n="21-7"/> en soit adverti le plus tost qu'il sera possible.</p>
+<p xml:id="p-3">Les affaires <placeName key="re:graubunden.che">Grisons</placeName> sont en partie payez, et pourtant passeront tous ceux qui ne soient point cassez au service du roy<anchor type="note" n="21-8"/>, mais d'autre costé les mescontentements entre monsieur le duc<anchor type="note" n="21-9"/> et l'ambassadeur<anchor type="note" n="21-10"/> sont si grands que le dernier est prest pour s'en aller.</p>
+<p xml:id="p-4">De la paix i'en croy fort peu si la <placeName key="co:fra">France</placeName> ne voudra commettre quelque lascheté en abandonnant les intérests d'<placeName key="co:ita">Italie</placeName> et d'<placeName key="co:deu">Allemagne</placeName> tout ensemble et rendant la <placeName key="re:lorraine.fra">Lorraine</placeName> dont la restitution les Austrichiens poursuivent tant aussy bien que de <placeName key="se:pinerolo.ita">Pinerol</placeName>. Ie veux toutesfois espérer le contraire, et moyenant que la <placeName key="co:fra">France</placeName> soit en repos au dedans, le cardinal<anchor type="note" n="21-11"/> ne manquera point de poursuivre son desseing avec l'aide de nos braves Suédois qui ores font trembler toute l'<placeName key="co:deu">Allemagne</placeName>. C'est bien un gran coup d'estat si le <persName key="deu.ferdinand-iii.1608-1657">roy d'Hongrie</persName><anchor type="note" n="21-12"/> détint l'élection d'un roy de Romain come on croit qu'elle se fera asseurement le mois cy proche que avec le temps la <orgName>maison d'Austriche</orgName> pourra faire son revanche de la <placeName key="co:fra">France</placeName> qui ores luy fait tant de mal par les Suédois.</p>
+<closer>
+<p xml:id="p-5">Je demeure, monsieur, <lb/> Tout le vostre <lb/> <persName key="marin.charles.-1651">C. Marin</persName>.</p>
+</closer>
+<p xml:id="p-6">Je vous reccomande mon paquet qui contient la duplicate de ma dernière<anchor type="note" n="21-13"/>.</p>
+<pb xml:id="pb-22" n="22"/>
+<closer>
+<p xml:id="p-7">De <placeName key="se:chiavenna.ita">Chiavenne</placeName>, ce 2/12 de Jenvier l'an 1637 à l'entrée duquel je vous souhaitte de par l'Eternel toute sorte de prospérité.</p>
+</closer>
+<p xml:id="p-8">Les Contois recerchent par les Bernois le roy pour la neutralité, laquelle ie ne croy point qu'ils obtiendront.</p>
+</div>
+<div xml:id="div-2" type="para">
+<p xml:id="p-9"><seg type="note">Boven aan de brief schreef Grotius:</seg> rec. 3 febr.</p>
+<p xml:id="p-10"><seg type="note">In dorso:</seg> 12 Ian. 1637 Marin.</p>
+</div>
+<div xml:id="div-3" xml:lang="nl" type="notes">
+<note n="21-1"><seg type="source">Hs. Den Haag, ARA. Eerste afd. coll. Hugo de Gr. Aanw. 1911 XXIII, no. 9</seg>. Eigenh. oorspr. Antw. op VII, no. 2900. Charles Marin of Marini (†1651) was nieuwsagent voor Zweden betreffende Zwitserland en de naburige landen.</note>
+<note n="21-2">No. 2863 (dl. VII).</note>
+<note n="21-3">No. 2871 (dl. VII).</note>
+<note n="21-4">No. 2889 (dl. VII).</note>
+<note n="21-5">No. 2900 (dl. VII).</note>
+<note n="21-6">No. 2909 (dl. VII).</note>
+<note n="21-7">Axel Oxenstierna, rijkskanselier van Zweden.</note>
+<note n="21-8">Lodewijk XIII van Frankrijk.</note>
+<note n="21-9">Henri, hertog van Rohan, bevelhebber van de Franse troepen in Graubünden en de Veltlin.</note>
+<note n="21-10">François Lasnier (1602-1676).</note>
+<note n="21-11">De Richelieu.</note>
+<note n="21-12">Ferdinand, zoon van keizer Ferdinand II.</note>
+<note n="21-13">Waarschijnlijk no. 2909 (dl. VII).</note>
+</div>
+</body>
 </text>
+</TEI>
