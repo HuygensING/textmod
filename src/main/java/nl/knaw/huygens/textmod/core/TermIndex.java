@@ -2,7 +2,6 @@ package nl.knaw.huygens.textmod.core;
 
 import nl.knaw.huygens.textmod.core.lucene.LuceneAnalyzer;
 import nl.knaw.huygens.textmod.core.lucene.LuceneUtils;
-import nl.knaw.huygens.textmod.core.text.Language;
 import nl.knaw.huygens.textmod.core.text.Token;
 import nl.knaw.huygens.textmod.core.text.Tokens;
 import nl.knaw.huygens.textmod.utils.CSVImporter;

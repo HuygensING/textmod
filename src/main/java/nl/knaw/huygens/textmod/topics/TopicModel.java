@@ -1,8 +1,10 @@
-package nl.knaw.huygens.textmod.core;
+package nl.knaw.huygens.textmod.topics;
 
 import com.google.common.collect.ImmutableList;
+import nl.knaw.huygens.textmod.core.Language;
+import nl.knaw.huygens.textmod.core.TermIndex;
+import nl.knaw.huygens.textmod.core.WeightedTerm;
 import nl.knaw.huygens.textmod.core.lucene.LuceneAnalyzer;
-import nl.knaw.huygens.textmod.core.text.Language;
 import nl.knaw.huygens.textmod.core.text.TextAnalyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

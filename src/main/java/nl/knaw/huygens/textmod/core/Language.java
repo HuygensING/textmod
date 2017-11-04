@@ -1,4 +1,4 @@
-package nl.knaw.huygens.textmod.core.text;
+package nl.knaw.huygens.textmod.core;
 
 import java.util.EnumSet;
 import java.util.HashMap;

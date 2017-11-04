@@ -1,6 +1,5 @@
-package nl.knaw.huygens.textmod.core.text;
+package nl.knaw.huygens.textmod.core;
 
-import nl.knaw.huygens.textmod.core.text.Language;
 import org.junit.Assert;
 import org.junit.Test;
 

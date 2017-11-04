@@ -1,7 +1,6 @@
-package nl.knaw.huygens.textmod.core;
+package nl.knaw.huygens.textmod.topics;
 
-import nl.knaw.huygens.textmod.core.TopicModel;
-import nl.knaw.huygens.textmod.core.text.Language;
+import nl.knaw.huygens.textmod.core.Language;
 import org.junit.Assert;
 import org.junit.Test;
 

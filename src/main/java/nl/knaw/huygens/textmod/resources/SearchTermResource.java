@@ -6,8 +6,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import nl.knaw.huygens.textmod.api.Suggestion;
-import nl.knaw.huygens.textmod.core.TopicModel;
-import nl.knaw.huygens.textmod.core.TopicModels;
+import nl.knaw.huygens.textmod.topics.TopicModel;
+import nl.knaw.huygens.textmod.topics.TopicModels;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

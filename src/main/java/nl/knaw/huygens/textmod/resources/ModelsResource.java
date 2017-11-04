@@ -2,7 +2,7 @@ package nl.knaw.huygens.textmod.resources;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import nl.knaw.huygens.textmod.core.TopicModels;
+import nl.knaw.huygens.textmod.topics.TopicModels;
 import nl.knaw.huygens.textmod.utils.FileUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;

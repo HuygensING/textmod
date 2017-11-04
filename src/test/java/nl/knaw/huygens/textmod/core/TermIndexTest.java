@@ -1,8 +1,5 @@
 package nl.knaw.huygens.textmod.core;
 
-import nl.knaw.huygens.textmod.core.TermIndex;
-import nl.knaw.huygens.textmod.core.WeightedTerm;
-import nl.knaw.huygens.textmod.core.text.Language;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.junit.Assert;
@@ -40,7 +37,9 @@ public class TermIndexTest {
 
   private Reader input(String... lines) {
     // Concatenate lines, separated and terminated by newline
-    String s = Arrays.asList(lines).stream().collect(Collectors.joining("\n", "", "\n"));
+    String s = Arrays.asList(lines)
+                     .stream()
+                     .collect(Collectors.joining("\n", "", "\n"));
     return new StringReader(s);
   }
 
@@ -84,7 +83,9 @@ public class TermIndexTest {
     index.closeAfterReading();
 
     Assert.assertEquals(2, terms.size());
-    List<String> texts = terms.stream().map(WeightedTerm::getText).collect(Collectors.toList());
+    List<String> texts = terms.stream()
+                              .map(WeightedTerm::getText)
+                              .collect(Collectors.toList());
     Assert.assertTrue(texts.contains("locum"));
     Assert.assertTrue(texts.contains("locumque"));
   }

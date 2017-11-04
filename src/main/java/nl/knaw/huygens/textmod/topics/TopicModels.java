@@ -1,4 +1,4 @@
-package nl.knaw.huygens.textmod.core;
+package nl.knaw.huygens.textmod.topics;
 
 import nl.knaw.huygens.textmod.Config;
 
