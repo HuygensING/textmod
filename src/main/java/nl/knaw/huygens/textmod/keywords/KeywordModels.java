@@ -1,17 +1,24 @@
 package nl.knaw.huygens.textmod.keywords;
 
 import nl.knaw.huygens.textmod.Config;
+import nl.knaw.huygens.textmod.utils.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 public class KeywordModels {
-  public static final String MODELS_DIR = "keywords";
+  private static final Logger LOG = LoggerFactory.getLogger(KeywordModels.class);
+
   public static final String DEFAULT_MODEL = "default";
 
+  private final File bootstrapDirectory;
   private final File modelsDirectory;
 
   public KeywordModels(Config config) {
-    modelsDirectory = new File(config.getDataDirectory(), MODELS_DIR);
+    bootstrapDirectory = new File(config.getBootstrapDirectory(), "keywords");
+    modelsDirectory = new File(config.getDataDirectory(), "keywords");
   }
 
   private File modelDirectory(String name) {
@@ -28,6 +35,8 @@ public class KeywordModels {
 
   public KeywordModels bootstrap() throws KeywordException {
     ensureDefaultModel();
+    FileUtils.listZipFiles(bootstrapDirectory)
+             .forEach(this::handleZipFile);
     return this;
   }
 
@@ -35,6 +44,16 @@ public class KeywordModels {
     File directory = modelDirectory(DEFAULT_MODEL);
     if (!directory.exists() && !directory.mkdirs()) {
       throw new KeywordException("Failed to create directory %s", directory);
+    }
+  }
+
+  private void handleZipFile(File zipFile) {
+    LOG.info("Handling: {}", zipFile.getAbsolutePath());
+    try {
+      FileUtils.unzipFile(zipFile, modelsDirectory);
+      zipFile.delete();
+    } catch (IOException e) {
+      LOG.error(e.getMessage());
     }
   }
 
