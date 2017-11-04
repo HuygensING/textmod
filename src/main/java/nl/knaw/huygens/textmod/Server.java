@@ -16,7 +16,6 @@ import nl.knaw.huygens.textmod.resources.KeywordsResource;
 import nl.knaw.huygens.textmod.resources.ModelsResource;
 import nl.knaw.huygens.textmod.resources.SearchTermResource;
 import nl.knaw.huygens.textmod.topics.TopicModels;
-import nl.knaw.huygens.textmod.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -55,8 +53,6 @@ public class Server extends Application<Config> {
     new Server().run(args);
   }
 
-  private TopicModels models;
-
   @Override
   public String getName() {
     return "textmod";
@@ -80,8 +76,7 @@ public class Server extends Application<Config> {
     Properties buildProperties = extractBuildProperties().orElse(new Properties());
     File dataDirectory = validateDataDirectory(config.getDataDirectory());
 
-    models = new TopicModels(config);
-    bootstrapTopicModels(config);
+    TopicModels models = new TopicModels(config).bootstrap();
 
     JerseyEnvironment jersey = environment.jersey();
     jersey.register(new AboutResource(getName(), buildProperties));
@@ -117,26 +112,6 @@ public class Server extends Application<Config> {
       throw new IOException("Failed to create data directory " + dataDirectory);
     }
     return dataDirectory;
-  }
-
-  private void bootstrapTopicModels(Config config) {
-    LOG.info("Looking for zipped models in: {}", config.getBootstrapDirectory());
-    FileUtils.listZipFiles(config.getBootstrapDirectory())
-             .forEach(file -> handleZipFile(file, config.getDataDirectory()));
-  }
-
-  private void handleZipFile(File zipFile, File targetDirectory) {
-    LOG.info("Handling: {}", zipFile.getAbsolutePath());
-    try {
-      List<String> names = FileUtils.unzipFile(zipFile, targetDirectory);
-      if (names.contains(models.getDefaultModelName())) {
-        models.getDefaultModel()
-              .setupTermIndex();
-      }
-      zipFile.delete();
-    } catch (IOException e) {
-      LOG.error(e.getMessage());
-    }
   }
 
 }
