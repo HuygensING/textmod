@@ -26,7 +26,7 @@ public class KeywordModels {
   }
 
   public KeywordModel getDefaultModel() throws KeywordException {
-    return new KeywordModel(modelDirectory(DEFAULT_MODEL));
+    return new KeywordModel(DEFAULT_MODEL, modelDirectory(DEFAULT_MODEL));
   }
 
   public KeywordModel getModel(String name) throws KeywordException {
