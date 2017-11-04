@@ -11,6 +11,7 @@ import io.swagger.annotations.Contact;
 import io.swagger.annotations.Info;
 import io.swagger.annotations.License;
 import io.swagger.annotations.SwaggerDefinition;
+import nl.knaw.huygens.textmod.keywords.KeywordModels;
 import nl.knaw.huygens.textmod.resources.AboutResource;
 import nl.knaw.huygens.textmod.resources.KeywordsResource;
 import nl.knaw.huygens.textmod.resources.ModelsResource;
@@ -76,13 +77,14 @@ public class Server extends Application<Config> {
     Properties buildProperties = extractBuildProperties().orElse(new Properties());
     File dataDirectory = validateDataDirectory(config.getDataDirectory());
 
-    TopicModels models = new TopicModels(config).bootstrap();
+    KeywordModels keywordModels = new KeywordModels(config).bootstrap();
+    TopicModels topicModels = new TopicModels(config).bootstrap();
 
     JerseyEnvironment jersey = environment.jersey();
     jersey.register(new AboutResource(getName(), buildProperties));
-    jersey.register(new KeywordsResource());
-    jersey.register(new ModelsResource(models, dataDirectory));
-    jersey.register(new SearchTermResource(models));
+    jersey.register(new KeywordsResource(keywordModels));
+    jersey.register(new ModelsResource(topicModels, dataDirectory));
+    jersey.register(new SearchTermResource(topicModels));
   }
 
   private Optional<Properties> extractBuildProperties() {
