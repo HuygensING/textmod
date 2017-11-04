@@ -5,29 +5,37 @@ import nl.knaw.huygens.textmod.Config;
 import java.io.File;
 
 public class KeywordModels {
+  public static final String MODELS_DIR = "keywords";
+  public static final String DEFAULT_MODEL = "default";
 
   private final File modelsDirectory;
-  private final String defaultModelName;
 
   public KeywordModels(Config config) {
-    modelsDirectory = new File(config.getDataDirectory(), "keywords");
-    defaultModelName = "default-model";
+    modelsDirectory = new File(config.getDataDirectory(), MODELS_DIR);
   }
 
-  public String getDefaultModelName() {
-    return defaultModelName;
+  private File modelDirectory(String name) {
+    return new File(modelsDirectory, name);
   }
 
-  public KeywordModel getDefaultModel() {
-    return new KeywordModel(new File(modelsDirectory, defaultModelName));
+  public KeywordModel getDefaultModel() throws KeywordException {
+    return new KeywordModel(modelDirectory(DEFAULT_MODEL));
   }
 
-  public KeywordModel getModel(String name) {
+  public KeywordModel getModel(String name) throws KeywordException {
     return getDefaultModel();
   }
 
-  public KeywordModels bootstrap() {
+  public KeywordModels bootstrap() throws KeywordException {
+    ensureDefaultModel();
     return this;
+  }
+
+  private void ensureDefaultModel() throws KeywordException {
+    File directory = modelDirectory(DEFAULT_MODEL);
+    if (!directory.exists() && !directory.mkdirs()) {
+      throw new KeywordException("Failed to create directory %s", directory);
+    }
   }
 
 }
