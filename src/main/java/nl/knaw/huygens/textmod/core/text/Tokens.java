@@ -76,15 +76,17 @@ public class Tokens {
   }
 
   public void handleSorted(TokenHandler handler, Comparator<Token> comparator, long maxSize) {
-    tokens.values()
-          .stream()
-          .sorted(comparator)
-          .limit(maxSize)
-          .forEach(handler::accept);
+    stream().sorted(comparator)
+            .limit(maxSize)
+            .forEach(handler::accept);
   }
 
   public void handleSorted(TokenHandler handler, Comparator<Token> comparator) {
     handleSorted(handler, comparator, Long.MAX_VALUE);
+  }
+
+  public void handle(TokenHandler handler) {
+    stream().forEach(handler::accept);
   }
 
   public Stream<Token> stream() {
@@ -101,14 +103,21 @@ public class Tokens {
     }
   }
 
-  public void read(File file) throws Exception {
+  public void read(File file, long minCount) throws Exception {
     CSVImporter importer = new CSVImporter() {
       @Override
       protected void handleLine(String[] items) throws Exception {
-        increment(items[0], Long.parseLong(items[1]));
+        long count = Long.parseLong(items[1]);
+        if (count >= minCount) {
+          increment(items[0], Long.parseLong(items[1]));
+        }
       }
     };
     importer.handleFile(file, 2);
+  }
+
+  public void read(File file) throws Exception {
+    read(file, 1);
   }
 
 }

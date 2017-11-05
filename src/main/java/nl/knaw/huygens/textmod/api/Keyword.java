@@ -2,6 +2,7 @@ package nl.knaw.huygens.textmod.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,6 +17,10 @@ public class Keyword {
   public Keyword(double weight, List<String> terms) {
     setWeight(weight);
     setTerms(terms);
+  }
+
+  public Keyword(double weight, String term) {
+    this(weight, Arrays.asList(term));
   }
 
   public Keyword() {
