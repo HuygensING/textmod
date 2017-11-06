@@ -47,7 +47,7 @@ that is mapped (cf. ``-v model-vol:/models``)::
   |
   |-- keywords
   |
-  |-- topis
+  |-- topics
 
 The ``keywords`` directory is checked for keyword models; the ``topics`` directory is
 checked for topic models. If a ``*.zip`` file is found in one of these directories, it
@@ -89,7 +89,7 @@ containing a file of ePistolarium 2.0.
 Topic models
 ~~~~~~~~~~~~
 
-When a topic model is present, search term suggestions can be optained as follows::
+When a topic model is present, search term suggestions can be obtained as follows::
 
   curl -H "Content-Type: application/json" \
     http://localhost:8080/suggest -d '{"query":"Jupiter Saturnus"}'
