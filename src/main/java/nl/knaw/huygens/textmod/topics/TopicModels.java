@@ -14,11 +14,13 @@ public class TopicModels {
   private static final Logger LOG = LoggerFactory.getLogger(TopicModels.class);
 
   private final Config config;
+  private final File bootstrapDirectory;
   private final File modelsDirectory;
   private final String defaultModelName;
 
   public TopicModels(Config config) {
     this.config = config;
+    bootstrapDirectory = new File(config.getBootstrapDirectory(), "topics");
     modelsDirectory = config.getModelsDirectory();
     defaultModelName = config.getDefaultModelName();
   }
@@ -32,8 +34,8 @@ public class TopicModels {
   }
 
   public TopicModels bootstrap() {
-    LOG.info("Looking for zipped models in: {}", config.getBootstrapDirectory());
-    FileUtils.listZipFiles(config.getBootstrapDirectory())
+    LOG.info("Looking for zipped models in: {}", bootstrapDirectory);
+    FileUtils.listZipFiles(bootstrapDirectory)
              .forEach(file -> handleZipFile(file, config.getDataDirectory()));
     return this;
   }
