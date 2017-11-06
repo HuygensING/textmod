@@ -7,6 +7,9 @@ import com.google.common.base.Preconditions;
  */
 public final class Statistics {
 
+  // cut-off for 99% confidence of significance
+  public static final double THRESHOLD_99 = 6.63;
+
   /**
    * Calculates the log-likelihood statistic.
    */

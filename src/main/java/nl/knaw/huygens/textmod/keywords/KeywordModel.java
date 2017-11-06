@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 public class KeywordModel {
   private static final Logger LOG = LoggerFactory.getLogger(KeywordModel.class);
 
-  // cut-off for 99% confidence of significance
-  static final double THRESHOLD = 6.63;
   private static final long MIN_COUNT = 2;
 
   private final Tokens corpusTokens;
@@ -30,9 +28,10 @@ public class KeywordModel {
     File file = new File(modelDirectory, "word-counts.csv");
     corpusTokens = readTokens(name, file);
     corpusTokenCount = corpusTokens.getTotalTokenCount();
+    LOG.debug("Reference corpus size: {}", corpusTokenCount);
   }
 
-  Tokens readTokens(String name, File file) throws KeywordException {
+  private Tokens readTokens(String name, File file) throws KeywordException {
     Tokens tokens = new Tokens();
     if (file.canRead()) {
       try {
@@ -78,7 +77,7 @@ public class KeywordModel {
 
   private List<Keyword> select(Tokens tokens, int n) {
     return tokens.stream()
-                 .filter(t -> t.getValue() > THRESHOLD)
+                 .filter(t -> (t.getValue() > Statistics.THRESHOLD_99))
                  .sorted(Token.VALUE_COMPARATOR)
                  .limit(n)
                  .map(t -> new Keyword(t.getValue(), t.getText()))
