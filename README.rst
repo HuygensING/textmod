@@ -36,11 +36,32 @@ This version also exposes various Dockerhub build properties at ``/about``::
 
   curl -s localhost:8080/about | jq
 
+
+Bootstrapping
+~~~~~~~~~~~~~
+
 When the TopMod server starts, it will check the directory ``bootstrap`` on the volume
-that is mapped (cf. ``-v model-vol:/models``).
-If a ``*.zip`` file is found, it will unzip the file and create a term index for internal
-usage (for denormalization of suggestions). If this succeeds, the zip file is deleted.
-Currently the zip file *must* contain a directory "model", as follows::
+that is mapped (cf. ``-v model-vol:/models``)::
+
+  bootstrap
+  |
+  |-- keywords
+  |
+  |-- topis
+
+The ``keywords`` directory is checked for keyword models; the ``topics`` directory is
+checked for topic models. If a ``*.zip`` file is found in one of these directories, it
+will be unzipped and processed to make the model ready for usage. If this succeeds,
+the zip file is deleted.
+
+
+Currently a keyword model file *must* contain a directory ``default``, as follows::
+
+  default
+  |
+  |-- word-counts.csv
+
+Currently a topic model file *must* contain a directory ``model``, as follows::
 
   model
   |
@@ -52,6 +73,22 @@ Currently the zip file *must* contain a directory "model", as follows::
       |-- terms-la.txt
       |-- terms-nl.txt
 
+
+Keywords
+~~~~~~~~
+
+The endpoint for determining keywords can be tested as follows::
+
+  curl -X POST -H "Content-Type: application/xml" \
+    http://localhost:8080/keywords -d @example.xml
+
+Here ``example.xml`` can be any xml file. The project contains an ``example.xml``
+containing a file of ePistolarium 2.0.
+
+
+Topic models
+~~~~~~~~~~~~
+
 When a topic model is present, search term suggestions can be optained as follows::
 
   curl -H "Content-Type: application/json" \
@@ -60,12 +97,3 @@ When a topic model is present, search term suggestions can be optained as follow
 N.B. Topic model files can be uploaded in zipped form, but this is now deprecated::
 
   curl -F "file=@model.zip;filename=model.zip" http://localhost:8080/models
-
-Keywords
---------
-
-The new endpoint for determining keywords can be tested as follows::
-
-  curl -X POST -H "Content-Type: application/xml" \
-    http://localhost:8080/keywords -d @example.xml
- 
