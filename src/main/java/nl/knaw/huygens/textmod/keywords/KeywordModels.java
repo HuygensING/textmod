@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class KeywordModels {
   private static final Logger LOG = LoggerFactory.getLogger(KeywordModels.class);
@@ -50,8 +51,10 @@ public class KeywordModels {
   private void handleZipFile(File zipFile) {
     LOG.info("Handling: {}", zipFile.getAbsolutePath());
     try {
-      FileUtils.unzipFile(zipFile, modelsDirectory);
-      zipFile.delete();
+      final List<String> createdDirs = FileUtils.unzipFile(zipFile, modelsDirectory);
+      LOG.trace("Unzipping {} created dirs: {}", zipFile.getAbsolutePath(), createdDirs);
+      final boolean deleted = zipFile.delete();
+      LOG.trace("Deleted {}: {}", zipFile.getAbsolutePath(), deleted);
     } catch (IOException e) {
       LOG.error(e.getMessage());
     }
