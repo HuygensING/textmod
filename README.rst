@@ -1,26 +1,26 @@
-TopMod
-======
+TextMod
+=======
 
-A REST interface to Topic Modeling.
+A REST interface to Text Modeling Tools, currently including topic modeling and keyword modeling.
 
 |stars| |pulls| |autom| |build|
 
-.. |stars| image:: https://img.shields.io/docker/stars/huygensing/topmod.svg
-   :target: https://hub.docker.com/r/huygensing/topmod/
-.. |pulls| image:: https://img.shields.io/docker/pulls/huygensing/topmod.svg
-   :target: https://hub.docker.com/r/huygensing/topmod/
-.. |autom| image:: https://img.shields.io/docker/automated/huygensing/topmod.svg
-   :target: https://hub.docker.com/r/huygensing/topmod/
-.. |build| image:: https://img.shields.io/docker/build/huygensing/topmod.svg
-   :target: https://hub.docker.com/r/huygensing/topmod/builds/
+.. |stars| image:: https://img.shields.io/docker/stars/huygensing/textmod.svg
+   :target: https://hub.docker.com/r/huygensing/textmod/
+.. |pulls| image:: https://img.shields.io/docker/pulls/huygensing/textmod.svg
+   :target: https://hub.docker.com/r/huygensing/textmod/
+.. |autom| image:: https://img.shields.io/docker/automated/huygensing/textmod.svg
+   :target: https://hub.docker.com/r/huygensing/textmod/
+.. |build| image:: https://img.shields.io/docker/build/huygensing/textmod.svg
+   :target: https://hub.docker.com/r/huygensing/textmod/builds/
 
 Usage
 -----
 
-Edit ``config.yml`` as needed. Then compile and run TopMod itself::
+Edit ``config.yml`` as needed. Then compile and run TextMod itself::
 
   mvn clean package &&
-    ./target/appassembler/bin/topmod server config.yml
+    ./target/appassembler/bin/textmod server config.yml
 
 or use the Dockerfile, ``docker run -p 8080:8080 -v model-vol:/models $(docker build -q .)``.
 The docker volume ``model-vol`` will be created if it does not exist.
@@ -29,9 +29,9 @@ in the configuration file.
 
 Alternatively, you can pull the latest build from Dockerhub::
 
-  docker pull huygensing/topmod
+  docker pull huygensing/textmod
 
-and run that version, ``docker run -p 8080:8080 -v model-vol:/models huygensing/topmod``.
+and run that version, ``docker run -p 8080:8080 -v model-vol:/models huygensing/textmod``.
 This version also exposes various Dockerhub build properties at ``/about``::
 
   curl -s localhost:8080/about | jq
@@ -40,7 +40,7 @@ This version also exposes various Dockerhub build properties at ``/about``::
 Bootstrapping
 ~~~~~~~~~~~~~
 
-When the TopMod server starts, it will check the directory ``bootstrap`` on the volume
+When the TextMod server starts, it will check the directory ``bootstrap`` on the volume
 that is mapped (cf. ``-v model-vol:/models``)::
 
   bootstrap
