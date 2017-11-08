@@ -97,3 +97,15 @@ When a topic model is present, search term suggestions can be obtained as follow
 N.B. Topic model files can be uploaded in zipped form, but this is now deprecated::
 
   curl -F "file=@model.zip;filename=model.zip" http://localhost:8080/models
+
+
+Cocitation analysis
+~~~~~~~~~~~~~~~~~~~
+
+TextMod can perform a cocitation analysis for persons mentioned in a set of documents.
+It can be used as follows:
+  
+  curl -X POST -H "Content-Type: application/json" \
+    http://localhost:8080/cocit -d @documents.json
+
+Here ``documents.json`` is a sample input document provided in the project.
