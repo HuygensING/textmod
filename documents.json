@@ -1,0 +1,7 @@
+{
+  "id": "set1",
+  "documents": [
+    {"id":"doc1", "xml":"<tei><p>Constantijn en Christiaan</p><p>Constantijn en Lodewijk</p></tei>"},
+    {"id":"doc2", "xml":"<tei><p>Christiaan en Constantijn</p><p>Lodewijk en Constantijn</p></tei>"}
+  ]
+}

@@ -13,6 +13,7 @@ import io.swagger.annotations.License;
 import io.swagger.annotations.SwaggerDefinition;
 import nl.knaw.huygens.textmod.keywords.KeywordModels;
 import nl.knaw.huygens.textmod.resources.AboutResource;
+import nl.knaw.huygens.textmod.resources.CocitationResource;
 import nl.knaw.huygens.textmod.resources.KeywordsResource;
 import nl.knaw.huygens.textmod.resources.ModelsResource;
 import nl.knaw.huygens.textmod.resources.SearchTermResource;
@@ -83,13 +84,13 @@ public class Server extends Application<Config> {
     JerseyEnvironment jersey = environment.jersey();
     jersey.register(new AboutResource(getName(), buildProperties));
     jersey.register(new KeywordsResource(keywordModels));
+    jersey.register(new CocitationResource());
     jersey.register(new ModelsResource(topicModels, dataDirectory));
     jersey.register(new SearchTermResource(topicModels));
   }
 
   private Optional<Properties> extractBuildProperties() {
-    final InputStream propertyStream = getClass().getClassLoader()
-                                                 .getResourceAsStream("build.properties");
+    final InputStream propertyStream = getClass().getClassLoader().getResourceAsStream("build.properties");
     if (propertyStream == null) {
       LOG.warn("Resource \"build.properties\" not found");
     } else {
