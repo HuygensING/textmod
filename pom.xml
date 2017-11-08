@@ -5,9 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>nl.knaw.huygens</groupId>
-  <artifactId>topmod</artifactId>
+  <artifactId>textmod</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>Topic Modeling Tool</name>
+  <name>Text Modeling Tools</name>
 
   <properties>
     <!-- Encoding: everything UTF-8, please -->
@@ -54,7 +54,7 @@
             <configuration>
               <programs>
                 <program>
-                  <id>topmod</id>
+                  <id>textmod</id>
                   <mainClass>nl.knaw.huygens.textmod.Server</mainClass>
                 </program>
               </programs>

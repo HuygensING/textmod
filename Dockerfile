@@ -35,4 +35,4 @@ COPY config.yml config.yml
 
 EXPOSE 8080 8081
 
-ENTRYPOINT ["/usr/local/bin/topmod", "server", "config.yml"]
+ENTRYPOINT ["/usr/local/bin/textmod", "server", "config.yml"]
