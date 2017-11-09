@@ -5,11 +5,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class Cocitation {
 
-  @ApiModelProperty(value = "identifier of items", required = true)
+  @ApiModelProperty(value = "identifiers of items", required = true)
   @JsonProperty("items")
   public String[] items;
 
-  @ApiModelProperty(value = "number of references to both items", required = true)
+  @ApiModelProperty(value = "number of references to items", required = true)
   @JsonProperty("count")
   public long count;
 
