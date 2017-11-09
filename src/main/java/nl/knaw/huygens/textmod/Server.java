@@ -11,6 +11,7 @@ import io.swagger.annotations.Contact;
 import io.swagger.annotations.Info;
 import io.swagger.annotations.License;
 import io.swagger.annotations.SwaggerDefinition;
+import nl.knaw.huygens.textmod.cocit.CocitationAnalyzer;
 import nl.knaw.huygens.textmod.keywords.KeywordModels;
 import nl.knaw.huygens.textmod.resources.AboutResource;
 import nl.knaw.huygens.textmod.resources.CocitationResource;
@@ -78,19 +79,21 @@ public class Server extends Application<Config> {
     Properties buildProperties = extractBuildProperties().orElse(new Properties());
     File dataDirectory = validateDataDirectory(config.getDataDirectory());
 
+    CocitationAnalyzer cocitationAnalyzer = new CocitationAnalyzer();
     KeywordModels keywordModels = new KeywordModels(config).bootstrap();
     TopicModels topicModels = new TopicModels(config).bootstrap();
 
     JerseyEnvironment jersey = environment.jersey();
     jersey.register(new AboutResource(getName(), buildProperties));
     jersey.register(new KeywordsResource(keywordModels));
-    jersey.register(new CocitationResource());
+    jersey.register(new CocitationResource(cocitationAnalyzer));
     jersey.register(new ModelsResource(topicModels, dataDirectory));
     jersey.register(new SearchTermResource(topicModels));
   }
 
   private Optional<Properties> extractBuildProperties() {
-    final InputStream propertyStream = getClass().getClassLoader().getResourceAsStream("build.properties");
+    final InputStream propertyStream = getClass().getClassLoader()
+                                                 .getResourceAsStream("build.properties");
     if (propertyStream == null) {
       LOG.warn("Resource \"build.properties\" not found");
     } else {
