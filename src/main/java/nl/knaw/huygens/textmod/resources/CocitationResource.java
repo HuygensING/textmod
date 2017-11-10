@@ -2,7 +2,7 @@ package nl.knaw.huygens.textmod.resources;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import nl.knaw.huygens.textmod.api.XmlDocuments;
+import nl.knaw.huygens.textmod.api.XmlDocument;
 import nl.knaw.huygens.textmod.cocit.CocitationAnalyzer;
 
 import javax.ws.rs.Consumes;
@@ -11,6 +11,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import java.util.Set;
 
 @Api(CocitationResource.PATH)
 @Path(CocitationResource.PATH)
@@ -27,13 +29,11 @@ public class CocitationResource {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @ApiOperation(value = "Calculates cocitations")
-  public Response getKeywords(XmlDocuments documents) {
+  public Response calculateCocitations(Set<XmlDocument> documents) {
     try {
-      return Response.ok(analyzer.analyze(documents))
-                     .build();
+      return Response.ok(analyzer.analyze(documents)).build();
     } catch (Exception e) {
-      return Response.serverError()
-                     .build();
+      return Response.serverError().build();
     }
   }
 

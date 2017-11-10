@@ -8,7 +8,6 @@ import nl.knaw.huygens.textmod.api.Cocitation;
 import nl.knaw.huygens.textmod.api.CocitationResult;
 import nl.knaw.huygens.textmod.api.Cocitations;
 import nl.knaw.huygens.textmod.api.XmlDocument;
-import nl.knaw.huygens.textmod.api.XmlDocuments;
 import nl.knaw.huygens.textmod.core.tei.Documents;
 
 import java.util.List;
@@ -17,24 +16,26 @@ import java.util.stream.Collectors;
 
 public class CocitationAnalyzer {
 
-  /** Prevent combinatorial explosion */
+  /**
+   * Prevent combinatorial explosion
+   */
   private static final int MAX_ITEMS_IN_SEGMENT = 10;
 
-  public CocitationAnalyzer() {}
+  public CocitationAnalyzer() {
+  }
 
-  public CocitationResult analyze(XmlDocuments documents) {
+  public CocitationResult analyze(Set<XmlDocument> documents) {
     CocitationResult result = new CocitationResult();
     if (documents != null) {
       result.setDetail(documents.stream()
-                                .map(this::handleXml)
+                                .map(this::calculateCocitations)
                                 .collect(Collectors.toSet()));
-      List<Cocitation> combined = combine(documents.getId(), result.getDetail());
-      result.setOverall(new Cocitations(documents.getId(), combined));
+      result.setOverall(combine(result.getDetail()));
     }
     return result;
   }
 
-  private Cocitations handleXml(XmlDocument doc) {
+  private Cocitations calculateCocitations(XmlDocument doc) {
     Document document = Documents.newDocument(doc.getXml());
     Set<String> correspondents = getCorrespondents(document);
     CitationTeiVisitor visitor = new CitationTeiVisitor(correspondents);
@@ -92,7 +93,7 @@ public class CocitationAnalyzer {
     return new Cocitation(cell.getValue(), cell.getRowKey(), cell.getColumnKey());
   }
 
-  private List<Cocitation> combine(String id, Set<Cocitations> items) {
+  private List<Cocitation> combine(Set<Cocitations> items) {
     Table<String, String, Long> table = TreeBasedTable.create();
     for (Cocitations item : items) {
       item.stream()

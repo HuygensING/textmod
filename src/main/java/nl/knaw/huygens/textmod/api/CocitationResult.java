@@ -1,24 +1,25 @@
 package nl.knaw.huygens.textmod.api;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class CocitationResult {
 
-  private Cocitations overall;
+  private List<Cocitation> overall;
 
   private Set<Cocitations> detail;
 
   public CocitationResult() {
-    overall = new Cocitations();
+    overall = Collections.emptyList();
     detail = Collections.emptySet();
   }
 
-  public Cocitations getOverall() {
+  public List<Cocitation> getOverall() {
     return overall;
   }
 
-  public void setOverall(Cocitations overall) {
+  public void setOverall(List<Cocitation> overall) {
     this.overall = overall;
   }
 
