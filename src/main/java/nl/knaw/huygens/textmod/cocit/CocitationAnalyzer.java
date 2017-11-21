@@ -7,6 +7,7 @@ import nl.knaw.huygens.tei.Document;
 import nl.knaw.huygens.textmod.api.Cocitation;
 import nl.knaw.huygens.textmod.api.CocitationResult;
 import nl.knaw.huygens.textmod.api.Cocitations;
+import nl.knaw.huygens.textmod.api.Graph;
 import nl.knaw.huygens.textmod.api.XmlDocument;
 import nl.knaw.huygens.textmod.core.tei.Documents;
 
@@ -21,15 +22,24 @@ public class CocitationAnalyzer {
    */
   private static final int MAX_ITEMS_IN_SEGMENT = 10;
 
-  public CocitationAnalyzer() {
+  public CocitationAnalyzer() {}
+
+  public Graph asGraph(Set<XmlDocument> documents) {
+    return convertToGraph(analyze(documents));
   }
 
-  public CocitationResult analyze(Set<XmlDocument> documents) {
+  public CocitationResult asFull(Set<XmlDocument> documents) {
+    return analyze(documents);
+  }
+
+  public List<Cocitation> asSimple(Set<XmlDocument> documents) {
+    return analyze(documents).getOverall();
+  }
+
+  private CocitationResult analyze(Set<XmlDocument> documents) {
     CocitationResult result = new CocitationResult();
     if (documents != null) {
-      result.setDetail(documents.stream()
-                                .map(this::calculateCocitations)
-                                .collect(Collectors.toSet()));
+      result.setDetail(documents.stream().map(this::calculateCocitations).collect(Collectors.toSet()));
       result.setOverall(combine(result.getDetail()));
     }
     return result;
@@ -65,12 +75,8 @@ public class CocitationAnalyzer {
   }
 
   private Set<String> getCorrespondents(Document document) {
-    return document.getElementsByTagName("meta")
-                   .stream()
-                   .filter(e -> e.hasType("sender") || e.hasType("recipient"))
-                   .map(e -> e.getAttribute("value"))
-                   .filter(v -> !v.isEmpty() && !v.equals("?"))
-                   .collect(Collectors.toSet());
+    return document.getElementsByTagName("meta").stream().filter(e -> e.hasType("sender") || e.hasType("recipient")).map(e -> e.getAttribute("value")).filter(v -> !v.isEmpty() && !v.equals("?"))
+        .collect(Collectors.toSet());
   }
 
   private void updateTable(Table<String, String, Long> table, String row, String col, long count) {
@@ -83,10 +89,7 @@ public class CocitationAnalyzer {
   }
 
   private List<Cocitation> convertTable(Table<String, String, Long> table) {
-    return table.cellSet()
-                .stream()
-                .map(this::cellToCocitation)
-                .collect(Collectors.toList());
+    return table.cellSet().stream().map(this::cellToCocitation).collect(Collectors.toList());
   }
 
   private Cocitation cellToCocitation(Cell<String, String, Long> cell) {
@@ -96,10 +99,13 @@ public class CocitationAnalyzer {
   private List<Cocitation> combine(Set<Cocitations> items) {
     Table<String, String, Long> table = TreeBasedTable.create();
     for (Cocitations item : items) {
-      item.stream()
-          .forEach(c -> updateTable(table, c.items[0], c.items[1], c.count));
+      item.stream().forEach(c -> updateTable(table, c.items[0], c.items[1], c.count));
     }
     return convertTable(table);
+  }
+
+  private Graph convertToGraph(CocitationResult data) {
+    return new Graph("undirected");
   }
 
 }
