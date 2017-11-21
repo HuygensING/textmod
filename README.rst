@@ -109,3 +109,9 @@ It can be used as follows:
     http://localhost:8080/cocit -d @documents.json
 
 Here ``documents.json`` is a sample input document provided in the project.
+By default the results is in ``simple`` format (a list of cocitations).
+Other formats are ``full`` and ``graph``, e.g.::
+  
+  curl -X POST -H "Content-Type: application/json" \
+    http://localhost:8080/cocit?format=graph -d @documents.json
+
