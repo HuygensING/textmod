@@ -1,18 +1,20 @@
 package nl.knaw.huygens.textmod.api;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import java.util.List;
+import java.util.Set;
 
 public class Graph {
 
   private final String type;
-  private List<Node> nodes;
+  private Set<String> nodes;
   private List<Edge> edges;
 
   public Graph(String type) {
     this.type = type;
-    nodes = Lists.newArrayList();
+    nodes = Sets.newTreeSet();
     edges = Lists.newArrayList();
   }
 
@@ -20,12 +22,16 @@ public class Graph {
     return type;
   }
 
-  public List<Node> getNodes() {
+  public Set<String> getNodes() {
     return nodes;
   }
 
-  public void setNodes(List<Node> nodes) {
+  public void setNodes(Set<String> nodes) {
     this.nodes = nodes;
+  }
+
+  public void addNode(String node) {
+    nodes.add(node);
   }
 
   public List<Edge> getEdges() {
@@ -34,6 +40,10 @@ public class Graph {
 
   public void setEdges(List<Edge> edges) {
     this.edges = edges;
+  }
+
+  public void addEdge(Edge edge) {
+    edges.add(edge);
   }
 
 }

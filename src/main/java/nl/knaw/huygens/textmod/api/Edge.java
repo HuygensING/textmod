@@ -2,27 +2,23 @@ package nl.knaw.huygens.textmod.api;
 
 public class Edge {
 
-  private final int[] nodes;
-  private int weight;
+  private final String[] nodes;
+  private long weight;
 
-  public Edge(int[] nodes) {
+  public Edge(String[] nodes, long weight) {
     this.nodes = nodes;
-    weight = 1;
+    this.weight = weight;
   }
 
-  public Edge(int source, int target) {
-    this(new int[] { source, target });
-  }
-
-  public int[] getNodes() {
+  public String[] getNodes() {
     return nodes;
   }
 
-  public int getWeight() {
+  public long getWeight() {
     return weight;
   }
 
-  public void setWeight(int weight) {
+  public void setWeight(long weight) {
     this.weight = weight;
   }
 

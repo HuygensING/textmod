@@ -7,6 +7,7 @@ import nl.knaw.huygens.tei.Document;
 import nl.knaw.huygens.textmod.api.Cocitation;
 import nl.knaw.huygens.textmod.api.CocitationResult;
 import nl.knaw.huygens.textmod.api.Cocitations;
+import nl.knaw.huygens.textmod.api.Edge;
 import nl.knaw.huygens.textmod.api.Graph;
 import nl.knaw.huygens.textmod.api.XmlDocument;
 import nl.knaw.huygens.textmod.core.tei.Documents;
@@ -105,7 +106,13 @@ public class CocitationAnalyzer {
   }
 
   private Graph convertToGraph(CocitationResult data) {
-    return new Graph("undirected");
+    Graph graph = new Graph("undirected");
+    for (Cocitation cocitation : data.getOverall()) {
+      graph.addNode(cocitation.items[0]);
+      graph.addNode(cocitation.items[1]);
+      graph.addEdge(new Edge(cocitation.items, cocitation.count));
+    }
+    return graph;
   }
 
 }
