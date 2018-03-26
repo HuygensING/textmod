@@ -2,6 +2,7 @@ package nl.knaw.huygens.textmod.core.text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ListTokenTextHandler extends DefaultTokenTextHandler {
   private final List<String> tokens;
@@ -17,6 +18,10 @@ public class ListTokenTextHandler extends DefaultTokenTextHandler {
 
   public List<String> getTokens() {
     return tokens;
+  }
+
+  public Stream<String> stream() {
+    return tokens.stream();
   }
 
 }
